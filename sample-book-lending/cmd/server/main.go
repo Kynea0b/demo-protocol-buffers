@@ -1,23 +1,75 @@
 package main
 
 import (
+	util "sample-book-lending/util"
+
 	"context"
 	"fmt"
 	"google.golang.org/grpc/reflection"
-	hellopb "sample-book-lending/pkg/grpc"
 	"log"
 	"os"
 	"os/signal"
+	hellopb "sample-book-lending/pkg/grpc"
 
 	// (一部抜粋)
 	"google.golang.org/grpc"
 	"net"
 
 	// for proxy
-	"google.golang.org/grpc/credentials/insecure"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"github.com/syndtr/goleveldb/leveldb"
+	"google.golang.org/grpc/credentials/insecure"
 	"net/http"
+	"unsafe"
 )
+
+var dbBook *leveldb.DB
+
+// var accountdb *leveldb.DB
+// 本の追加
+func addItem(key string, val string) {
+	_ = dbBook.Put([]byte(key), []byte(val), nil)
+}
+
+// 本の削除
+func deleteItem(key string) {
+	_ = dbBook.Delete([]byte(key), nil)
+}
+
+// 本の冊数取得
+func getItem(key string) string {
+	data, _ := dbBook.Get([]byte(key), nil)
+	res := *(*string)(unsafe.Pointer(&data))
+	return res
+}
+
+func UpdateStock(key string, db *leveldb.DB) {
+	// todo: panic occurs when the key does not exist
+	data, err := db.Get([]byte(key), nil)
+	if err != nil {
+		fmt.Println("DB Error")
+		return
+	}
+	val := util.DecodeUint(data)
+
+	// 貸し出し数を減らす
+	if val == 0 {
+		fmt.Println("No Stock")
+		return
+	}
+	val = val - 1
+
+	// 残りの本の数
+	fmt.Println("Stock remaining: ", val)
+
+	// update
+	buf, _ := util.EncodeUint(uint64(val))
+	err = db.Put([]byte(key), buf, nil)
+	if err != nil {
+		fmt.Println("DB Error")
+		return
+	}
+}
 
 type myServer struct {
 	hellopb.UnimplementedLendingBooksServiceServer
@@ -26,11 +78,13 @@ type myServer struct {
 // account.protoの`service`に定義したメソッドの実装
 // 本を借りるためのメソッド
 func (s *myServer) SendBorrow(ctx context.Context, req *hellopb.BorrowRequest) (*hellopb.BorrrowResponse, error) {
-	// リクエストからnameフィールドを取り出して
-	// "Hello, [名前]!"というレスポンスを返す
+
+	// 本の数を1冊減らす
+	UpdateStock(req.Book.Title, dbBook)
+
 	return &hellopb.BorrrowResponse{
 		Account: &hellopb.Account{Name: req.Account.Name},
-		Book: &hellopb.Book{Title: req.Book.Title},
+		Book:    &hellopb.Book{Title: req.Book.Title},
 	}, nil
 }
 
@@ -50,6 +104,15 @@ func NewMyServer() *myServer {
 }
 
 func main() {
+	// bool library
+	dbBook, _ = leveldb.OpenFile("path/to/bookdb", nil)
+	// 書き込み
+	// 貸し出し書籍10冊
+	buf, _ := util.EncodeUint(uint64(10))
+	_ = dbBook.Put([]byte("赤毛のアン"), buf, nil)
+	_ = dbBook.Put([]byte("小公女セーラ"), buf, nil)
+	_ = dbBook.Put([]byte("フランダースの犬"), buf, nil)
+
 	// 1. 8080番portのLisnterを作成
 	port := 8080
 	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", port))

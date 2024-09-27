@@ -16,5 +16,5 @@ call_sendborrow_method_of_the_service:
 	grpcurl -plaintext -d '{"account":{ "name": "Tanaka"},"book":{ "title": "赤毛のあん"}}' localhost:8080 myapp.LendingBooksService.SendBorrow
 
 request:
-	curl -X POST -k http://localhost:8090/v1/example/echo -d '{"name": " Proxy Anpanman"}'
+	curl -X POST -k http://localhost:8090/v1/accountinfo/books -d '{"name": " Proxy Anpanman"}'
 

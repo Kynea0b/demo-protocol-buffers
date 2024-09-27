@@ -1,0 +1,52 @@
+syntax = "proto3";
+// for proxy
+import "google/api/annotations.proto";
+import "book.proto";
+
+// protoファイルで定義したメッセージ型
+// required, option, ...とかがproto2のみ必要だった。proto1からproto3でproto2のみイレギュラー担ってて厄介なのでproto3でよくね。
+
+option go_package = "./pkg/grpc";
+
+// packageの宣言
+package myapp;
+
+// 本を借りるためのAccount
+message Account {
+  // 借りた人の名前
+  string name = 1;
+}
+
+message AccountInfo {
+  // 借りた人の名前
+  string name = 1;
+  //repeated Book books = 2;
+}
+
+message BorrowRequest {
+  Account account = 1;
+  Book book = 2;
+}
+
+message BorrrowResponse {
+  Account account = 1;
+  Book book = 2;
+}
+
+
+// サービスの定義
+
+service LendingBooksService {
+  // 本を借りるためのメソッド
+  rpc SendBorrow (BorrowRequest) returns (BorrrowResponse);
+  
+  //アカウント情報を知るためのメソッド。Restful APIから呼ばれる。
+  //アカウントを指定すると借りてる本一覧が表示される。
+  rpc AccountInfo (Account) returns (Account) {
+    option (google.api.http) = {
+      post: "/v1/accountinfo/books"
+      body: "*"
+    };
+  }
+}
+

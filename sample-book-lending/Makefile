@@ -9,6 +9,9 @@ gen_code:
 gen-doc:
 	protoc -I ./proto --doc_out=html,index.html:./doc proto/*.proto
 
+gen-swagger:
+	protoc  -I ./proto --openapiv2_out=./doc --openapiv2_opt=disable_service_tags=true,output_format=yaml ./proto/*.proto
+
 start_server:
 	cd cmd/server && go run main.go
 

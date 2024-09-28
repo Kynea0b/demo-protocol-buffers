@@ -1,0 +1,80 @@
+swagger: "2.0"
+info:
+  title: packageの宣言
+  version: version not set
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /v1/info/book:
+    post:
+      summary: 本の名前を指定すると、借りている人の名前一覧が取得できる
+      operationId: LendingBooksService_ShowBookInfo
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/myappAccounts'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/Book'
+definitions:
+  Book:
+    type: object
+    properties:
+      title:
+        type: string
+        title: 本のタイトル
+    title: 借りる本
+  myappAccount:
+    type: object
+    properties:
+      name:
+        type: string
+        title: 借りる人の名前
+    title: 図書館のアカウント
+  myappAccounts:
+    type: object
+    properties:
+      names:
+        type: array
+        items:
+          type: string
+        title: 借りる人の名前
+    title: 図書館のアカウント
+  myappBorrrowResponse:
+    type: object
+    properties:
+      account:
+        $ref: '#/definitions/myappAccount'
+        title: 本を借りたアカウント
+      book:
+        $ref: '#/definitions/Book'
+        title: 借りた本
+  protobufAny:
+    type: object
+    properties:
+      '@type':
+        type: string
+    additionalProperties: {}
+  rpcStatus:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+      message:
+        type: string
+      details:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/protobufAny'

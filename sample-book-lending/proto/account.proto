@@ -11,40 +11,45 @@ option go_package = "./pkg/grpc";
 // packageの宣言
 package myapp;
 
-// 本を借りるためのAccount
+// 図書館のアカウント
 message Account {
-  // 借りた人の名前
+  // 借りる人の名前
   string name = 1;
 }
 
+// 貸し出し状況
 message AccountInfo {
   // 借りた人の名前
   string name = 1;
-  //repeated Book books = 2;
+  // 借りている本一覧
+  Books books = 2;
 }
 
+// 貸し出しリクエスト
 message BorrowRequest {
+  //　本を借りるアカウント
   Account account = 1;
+  //　借りたい本
   Book book = 2;
 }
 
 message BorrrowResponse {
+  //　本を借りたアカウント
   Account account = 1;
+  //　借りた本
   Book book = 2;
 }
 
 
-// サービスの定義
-
+// 本の貸し出しサービス
 service LendingBooksService {
   // 本を借りるためのメソッド
   rpc SendBorrow (BorrowRequest) returns (BorrrowResponse);
   
-  //アカウント情報を知るためのメソッド。Restful APIから呼ばれる。
-  //アカウントを指定すると借りてる本一覧が表示される。
-  rpc AccountInfo (Account) returns (Account) {
+  // 名前を指定すると借りてる本一覧が表示される。
+  rpc ShowAccountInfo (Account) returns (AccountInfo) {
     option (google.api.http) = {
-      post: "/v1/accountinfo/books"
+      post: "/v1/accountinfo/account"
       body: "*"
     };
   }

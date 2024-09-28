@@ -88,13 +88,14 @@ func (s *myServer) SendBorrow(ctx context.Context, req *hellopb.BorrowRequest) (
 	}, nil
 }
 
-// account.protoの`service`に定義したメソッドの実装
-// アカウントの貸与状態を知るためのRestful API
-func (s *myServer) AccountInfo(ctx context.Context, req *hellopb.Account) (*hellopb.Account, error) {
-	// リクエストからnameフィールドを取り出して
-	// "Hello, [名前]!"というレスポンスを返す
-	return &hellopb.Account{
-		Name: req.GetName(),
+func (s *myServer) ShowAccountInfo(ctx context.Context, req *hellopb.Account) (*hellopb.AccountInfo, error) {
+	var titles []string
+	titles = append(titles, "foo title")
+	titles = append(titles, "bar title")
+	books := &hellopb.Books{Titles: titles}
+	return &hellopb.AccountInfo{
+		Name:  req.GetName(),
+		Books: books,
 	}, nil
 }
 

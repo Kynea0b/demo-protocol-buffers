@@ -6,3 +6,7 @@ option go_package = "./pkg/grpc";
 message Book {
   string title = 1; // // Golang なら []string になる
 }
+
+message Books {
+  repeated string titles = 1;
+}

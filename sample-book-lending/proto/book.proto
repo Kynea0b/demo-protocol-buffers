@@ -3,10 +3,14 @@ syntax = "proto3";
 
 option go_package = "./pkg/grpc";
 
+//　借りる本
 message Book {
-  string title = 1; // // Golang なら []string になる
+  // 本のタイトル
+  string title = 1;
 }
 
+// 借りた本
 message Books {
+  // 借りた本のタイトル一覧
   repeated string titles = 1;
 }

@@ -213,6 +213,10 @@
                   <a href="#.Book"><span class="badge">M</span>Book</a>
                 </li>
               
+                <li>
+                  <a href="#.Books"><span class="badge">M</span>Books</a>
+                </li>
+              
               
               
               
@@ -232,7 +236,31 @@
 
       
         <h3 id="myapp.Account">Account</h3>
-        <p>本を借りるためのAccount</p>
+        <p>図書館のアカウント</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>name</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>借りる人の名前 </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="myapp.AccountInfo">AccountInfo</h3>
+        <p>貸し出し状況</p>
 
         
           <table class="field-table">
@@ -248,30 +276,11 @@
                   <td><p>借りた人の名前 </p></td>
                 </tr>
               
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="myapp.AccountInfo">AccountInfo</h3>
-        <p></p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
                 <tr>
-                  <td>name</td>
-                  <td><a href="#string">string</a></td>
+                  <td>books</td>
+                  <td><a href="#Books">Books</a></td>
                   <td></td>
-                  <td><p>借りた人の名前
-
-repeated Book books = 2; </p></td>
+                  <td><p>借りている本一覧 </p></td>
                 </tr>
               
             </tbody>
@@ -282,7 +291,7 @@ repeated Book books = 2; </p></td>
         
       
         <h3 id="myapp.BorrowRequest">BorrowRequest</h3>
-        <p></p>
+        <p>貸し出しリクエスト</p>
 
         
           <table class="field-table">
@@ -295,14 +304,14 @@ repeated Book books = 2; </p></td>
                   <td>account</td>
                   <td><a href="#myapp.Account">Account</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>本を借りるアカウント </p></td>
                 </tr>
               
                 <tr>
                   <td>book</td>
                   <td><a href="#Book">Book</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>借りたい本 </p></td>
                 </tr>
               
             </tbody>
@@ -326,14 +335,14 @@ repeated Book books = 2; </p></td>
                   <td>account</td>
                   <td><a href="#myapp.Account">Account</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>本を借りたアカウント </p></td>
                 </tr>
               
                 <tr>
                   <td>book</td>
                   <td><a href="#Book">Book</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>借りた本 </p></td>
                 </tr>
               
             </tbody>
@@ -350,7 +359,7 @@ repeated Book books = 2; </p></td>
 
       
         <h3 id="myapp.LendingBooksService">LendingBooksService</h3>
-        <p></p>
+        <p>本の貸し出しサービス</p>
         <table class="enum-table">
           <thead>
             <tr><td>Method Name</td><td>Request Type</td><td>Response Type</td><td>Description</td></tr>
@@ -365,11 +374,10 @@ repeated Book books = 2; </p></td>
               </tr>
             
               <tr>
-                <td>AccountInfo</td>
+                <td>ShowAccountInfo</td>
                 <td><a href="#myapp.Account">Account</a></td>
-                <td><a href="#myapp.Account">Account</a></td>
-                <td><p>アカウント情報を知るためのメソッド。Restful APIから呼ばれる。
-アカウントを指定すると借りてる本一覧が表示される。</p></td>
+                <td><a href="#myapp.AccountInfo">AccountInfo</a></td>
+                <td><p>名前を指定すると借りてる本一覧が表示される。</p></td>
               </tr>
             
           </tbody>
@@ -393,9 +401,9 @@ repeated Book books = 2; </p></td>
               
               
               <tr>
-                <td>AccountInfo</td>
+                <td>ShowAccountInfo</td>
                 <td>POST</td>
-                <td>/v1/accountinfo/books</td>
+                <td>/v1/accountinfo/account</td>
                 <td>*</td>
               </tr>
               
@@ -413,7 +421,7 @@ repeated Book books = 2; </p></td>
 
       
         <h3 id=".Book">Book</h3>
-        <p></p>
+        <p>借りる本</p>
 
         
           <table class="field-table">
@@ -426,7 +434,31 @@ repeated Book books = 2; </p></td>
                   <td>title</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p>Golang なら []string になる </p></td>
+                  <td><p>本のタイトル </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id=".Books">Books</h3>
+        <p>借りた本</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>titles</td>
+                  <td><a href="#string">string</a></td>
+                  <td>repeated</td>
+                  <td><p>借りた本のタイトル一覧 </p></td>
                 </tr>
               
             </tbody>

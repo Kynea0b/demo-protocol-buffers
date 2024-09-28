@@ -30,8 +30,8 @@ demo-protocol-buffers/sample-book-lending
 % make show_accountinfo
 ```
 
-## document
+## Protocol Documentation
 
-[document](https://kynea0b.github.io/demo-protocol-buffers/sample-book-lending/doc/index.html)
+[Protocol Documentation](https://kynea0b.github.io/demo-protocol-buffers/sample-book-lending/doc/index.html)
 
 

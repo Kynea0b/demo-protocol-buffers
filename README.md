@@ -6,4 +6,4 @@
 
 本の貸し出しを行うサービスです。gRPC APIを使用して、本の貸し出しリクエストをしたり、Restful APIを使用して、本の在庫を確認します。
 
-- document:[document](https://kynea0b.github.io/demo-protocol-buffers/sample-book-lending/doc/index.html)
+- Protocol Documentation:[Protocol Documentation](https://kynea0b.github.io/demo-protocol-buffers/sample-book-lending/doc/index.html)

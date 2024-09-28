@@ -6,10 +6,10 @@ gen_code:
     --grpc-gateway_out ./pkg/grpc --grpc-gateway_opt paths=source_relative \
 	./proto/*.proto
 
-gen-doc:
+gen_doc:
 	protoc -I ./proto --doc_out=html,index.html:./doc proto/*.proto
 
-gen-swagger:
+gen_swagger:
 	protoc  -I ./proto --openapiv2_out=./doc --openapiv2_opt=disable_service_tags=true,output_format=yaml ./proto/*.proto
 
 start_server:

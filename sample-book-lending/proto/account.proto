@@ -3,9 +3,6 @@ syntax = "proto3";
 import "google/api/annotations.proto";
 import "book.proto";
 
-// protoファイルで定義したメッセージ型
-// required, option, ...とかがproto2のみ必要だった。proto1からproto3でproto2のみイレギュラー担ってて厄介なのでproto3でよくね。
-
 option go_package = "./pkg/grpc";
 
 // packageの宣言

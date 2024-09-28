@@ -21,8 +21,8 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	LendingBooksService_SendBorrow_FullMethodName      = "/myapp.LendingBooksService/SendBorrow"
-	LendingBooksService_ShowAccountInfo_FullMethodName = "/myapp.LendingBooksService/ShowAccountInfo"
+	LendingBooksService_SendBorrow_FullMethodName   = "/myapp.LendingBooksService/SendBorrow"
+	LendingBooksService_ShowBookInfo_FullMethodName = "/myapp.LendingBooksService/ShowBookInfo"
 )
 
 // LendingBooksServiceClient is the client API for LendingBooksService service.
@@ -33,8 +33,8 @@ const (
 type LendingBooksServiceClient interface {
 	// 本を借りるためのメソッド
 	SendBorrow(ctx context.Context, in *BorrowRequest, opts ...grpc.CallOption) (*BorrrowResponse, error)
-	// 名前を指定すると借りてる本一覧が表示される。
-	ShowAccountInfo(ctx context.Context, in *Account, opts ...grpc.CallOption) (*AccountInfo, error)
+	// 本の名前を指定すると、借りている人の名前一覧が取得できる
+	ShowBookInfo(ctx context.Context, in *Book, opts ...grpc.CallOption) (*Accounts, error)
 }
 
 type lendingBooksServiceClient struct {
@@ -55,10 +55,10 @@ func (c *lendingBooksServiceClient) SendBorrow(ctx context.Context, in *BorrowRe
 	return out, nil
 }
 
-func (c *lendingBooksServiceClient) ShowAccountInfo(ctx context.Context, in *Account, opts ...grpc.CallOption) (*AccountInfo, error) {
+func (c *lendingBooksServiceClient) ShowBookInfo(ctx context.Context, in *Book, opts ...grpc.CallOption) (*Accounts, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(AccountInfo)
-	err := c.cc.Invoke(ctx, LendingBooksService_ShowAccountInfo_FullMethodName, in, out, cOpts...)
+	out := new(Accounts)
+	err := c.cc.Invoke(ctx, LendingBooksService_ShowBookInfo_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -73,8 +73,8 @@ func (c *lendingBooksServiceClient) ShowAccountInfo(ctx context.Context, in *Acc
 type LendingBooksServiceServer interface {
 	// 本を借りるためのメソッド
 	SendBorrow(context.Context, *BorrowRequest) (*BorrrowResponse, error)
-	// 名前を指定すると借りてる本一覧が表示される。
-	ShowAccountInfo(context.Context, *Account) (*AccountInfo, error)
+	// 本の名前を指定すると、借りている人の名前一覧が取得できる
+	ShowBookInfo(context.Context, *Book) (*Accounts, error)
 	mustEmbedUnimplementedLendingBooksServiceServer()
 }
 
@@ -88,8 +88,8 @@ type UnimplementedLendingBooksServiceServer struct{}
 func (UnimplementedLendingBooksServiceServer) SendBorrow(context.Context, *BorrowRequest) (*BorrrowResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SendBorrow not implemented")
 }
-func (UnimplementedLendingBooksServiceServer) ShowAccountInfo(context.Context, *Account) (*AccountInfo, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ShowAccountInfo not implemented")
+func (UnimplementedLendingBooksServiceServer) ShowBookInfo(context.Context, *Book) (*Accounts, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ShowBookInfo not implemented")
 }
 func (UnimplementedLendingBooksServiceServer) mustEmbedUnimplementedLendingBooksServiceServer() {}
 func (UnimplementedLendingBooksServiceServer) testEmbeddedByValue()                             {}
@@ -130,20 +130,20 @@ func _LendingBooksService_SendBorrow_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
-func _LendingBooksService_ShowAccountInfo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Account)
+func _LendingBooksService_ShowBookInfo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Book)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(LendingBooksServiceServer).ShowAccountInfo(ctx, in)
+		return srv.(LendingBooksServiceServer).ShowBookInfo(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: LendingBooksService_ShowAccountInfo_FullMethodName,
+		FullMethod: LendingBooksService_ShowBookInfo_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LendingBooksServiceServer).ShowAccountInfo(ctx, req.(*Account))
+		return srv.(LendingBooksServiceServer).ShowBookInfo(ctx, req.(*Book))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -160,8 +160,8 @@ var LendingBooksService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _LendingBooksService_SendBorrow_Handler,
 		},
 		{
-			MethodName: "ShowAccountInfo",
-			Handler:    _LendingBooksService_ShowAccountInfo_Handler,
+			MethodName: "ShowBookInfo",
+			Handler:    _LendingBooksService_ShowBookInfo_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

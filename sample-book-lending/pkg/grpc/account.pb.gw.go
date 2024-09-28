@@ -31,28 +31,28 @@ var _ = runtime.String
 var _ = utilities.NewDoubleArray
 var _ = metadata.Join
 
-func request_LendingBooksService_ShowAccountInfo_0(ctx context.Context, marshaler runtime.Marshaler, client LendingBooksServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq Account
+func request_LendingBooksService_ShowBookInfo_0(ctx context.Context, marshaler runtime.Marshaler, client LendingBooksServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq Book
 	var metadata runtime.ServerMetadata
 
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := client.ShowAccountInfo(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.ShowBookInfo(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
 
-func local_request_LendingBooksService_ShowAccountInfo_0(ctx context.Context, marshaler runtime.Marshaler, server LendingBooksServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq Account
+func local_request_LendingBooksService_ShowBookInfo_0(ctx context.Context, marshaler runtime.Marshaler, server LendingBooksServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq Book
 	var metadata runtime.ServerMetadata
 
 	if err := marshaler.NewDecoder(req.Body).Decode(&protoReq); err != nil && err != io.EOF {
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := server.ShowAccountInfo(ctx, &protoReq)
+	msg, err := server.ShowBookInfo(ctx, &protoReq)
 	return msg, metadata, err
 
 }
@@ -64,7 +64,7 @@ func local_request_LendingBooksService_ShowAccountInfo_0(ctx context.Context, ma
 // GRPC interceptors will not work for this type of registration. To use interceptors, you must use the "runtime.WithMiddlewares" option in the "runtime.NewServeMux" call.
 func RegisterLendingBooksServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server LendingBooksServiceServer) error {
 
-	mux.Handle("POST", pattern_LendingBooksService_ShowAccountInfo_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_LendingBooksService_ShowBookInfo_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
@@ -72,12 +72,12 @@ func RegisterLendingBooksServiceHandlerServer(ctx context.Context, mux *runtime.
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/myapp.LendingBooksService/ShowAccountInfo", runtime.WithHTTPPathPattern("/v1/accountinfo/account"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/myapp.LendingBooksService/ShowBookInfo", runtime.WithHTTPPathPattern("/v1/info/book"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_LendingBooksService_ShowAccountInfo_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_LendingBooksService_ShowBookInfo_0(annotatedContext, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
@@ -85,7 +85,7 @@ func RegisterLendingBooksServiceHandlerServer(ctx context.Context, mux *runtime.
 			return
 		}
 
-		forward_LendingBooksService_ShowAccountInfo_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_LendingBooksService_ShowBookInfo_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -130,25 +130,25 @@ func RegisterLendingBooksServiceHandler(ctx context.Context, mux *runtime.ServeM
 // "LendingBooksServiceClient" to call the correct interceptors. This client ignores the HTTP middlewares.
 func RegisterLendingBooksServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, client LendingBooksServiceClient) error {
 
-	mux.Handle("POST", pattern_LendingBooksService_ShowAccountInfo_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_LendingBooksService_ShowBookInfo_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/myapp.LendingBooksService/ShowAccountInfo", runtime.WithHTTPPathPattern("/v1/accountinfo/account"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/myapp.LendingBooksService/ShowBookInfo", runtime.WithHTTPPathPattern("/v1/info/book"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_LendingBooksService_ShowAccountInfo_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_LendingBooksService_ShowBookInfo_0(annotatedContext, inboundMarshaler, client, req, pathParams)
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_LendingBooksService_ShowAccountInfo_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_LendingBooksService_ShowBookInfo_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -156,9 +156,9 @@ func RegisterLendingBooksServiceHandlerClient(ctx context.Context, mux *runtime.
 }
 
 var (
-	pattern_LendingBooksService_ShowAccountInfo_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "accountinfo", "account"}, ""))
+	pattern_LendingBooksService_ShowBookInfo_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "info", "book"}, ""))
 )
 
 var (
-	forward_LendingBooksService_ShowAccountInfo_0 = runtime.ForwardResponseMessage
+	forward_LendingBooksService_ShowBookInfo_0 = runtime.ForwardResponseMessage
 )

@@ -20,12 +20,14 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+// 　借りる本
 type Book struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Title string `protobuf:"bytes,1,opt,name=title,proto3" json:"title,omitempty"` // // Golang なら []string になる
+	// 本のタイトル
+	Title string `protobuf:"bytes,1,opt,name=title,proto3" json:"title,omitempty"`
 }
 
 func (x *Book) Reset() {
@@ -67,11 +69,13 @@ func (x *Book) GetTitle() string {
 	return ""
 }
 
+// 借りた本
 type Books struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
+	// 借りた本のタイトル一覧
 	Titles []string `protobuf:"bytes,1,rep,name=titles,proto3" json:"titles,omitempty"`
 }
 

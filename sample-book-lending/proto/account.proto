@@ -17,6 +17,12 @@ message Account {
   string name = 1;
 }
 
+// 図書館のアカウント
+message Accounts {
+  // 借りる人の名前
+  repeated string names = 1;
+}
+
 // 貸し出し状況
 message AccountInfo {
   // 借りた人の名前
@@ -46,10 +52,10 @@ service LendingBooksService {
   // 本を借りるためのメソッド
   rpc SendBorrow (BorrowRequest) returns (BorrrowResponse);
   
-  // 名前を指定すると借りてる本一覧が表示される。
-  rpc ShowAccountInfo (Account) returns (AccountInfo) {
+  // 本の名前を指定すると、借りている人の名前一覧が取得できる
+  rpc ShowBookInfo (Book) returns (Accounts) {
     option (google.api.http) = {
-      post: "/v1/accountinfo/account"
+      post: "/v1/info/book"
       body: "*"
     };
   }

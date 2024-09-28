@@ -187,6 +187,10 @@
                 </li>
               
                 <li>
+                  <a href="#myapp.Accounts"><span class="badge">M</span>Accounts</a>
+                </li>
+              
+                <li>
                   <a href="#myapp.BorrowRequest"><span class="badge">M</span>BorrowRequest</a>
                 </li>
               
@@ -290,6 +294,30 @@
 
         
       
+        <h3 id="myapp.Accounts">Accounts</h3>
+        <p>図書館のアカウント</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>names</td>
+                  <td><a href="#string">string</a></td>
+                  <td>repeated</td>
+                  <td><p>借りる人の名前 </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
         <h3 id="myapp.BorrowRequest">BorrowRequest</h3>
         <p>貸し出しリクエスト</p>
 
@@ -374,10 +402,10 @@
               </tr>
             
               <tr>
-                <td>ShowAccountInfo</td>
-                <td><a href="#myapp.Account">Account</a></td>
-                <td><a href="#myapp.AccountInfo">AccountInfo</a></td>
-                <td><p>名前を指定すると借りてる本一覧が表示される。</p></td>
+                <td>ShowBookInfo</td>
+                <td><a href="#Book">.Book</a></td>
+                <td><a href="#myapp.Accounts">Accounts</a></td>
+                <td><p>本の名前を指定すると、借りている人の名前一覧が取得できる</p></td>
               </tr>
             
           </tbody>
@@ -401,9 +429,9 @@
               
               
               <tr>
-                <td>ShowAccountInfo</td>
+                <td>ShowBookInfo</td>
                 <td>POST</td>
-                <td>/v1/accountinfo/account</td>
+                <td>/v1/info/book</td>
                 <td>*</td>
               </tr>
               

@@ -99,17 +99,20 @@ func (s *myServer) SendBorrow(ctx context.Context, req *hellopb.BorrowRequest) (
 	}, nil
 }
 
-// アカウントの名前から借りている本の一覧を取得
+// 本のタイトルから貸与者を取得
 func (s *myServer) ShowBookInfo(ctx context.Context, req *hellopb.Book) (*hellopb.Accounts, error) {
 	iter := dbBook.NewIterator(util.BytesPrefix([]byte(req.Title)), nil)
-	var names []string
+	
+	var acntArray []*hellopb.Account 
 	for iter.Next() {
 		if len(iter.Value()) != 0 {
-			names = append(names, string(iter.Value()))
+			// names = append(names, string(iter.Value()))
+			acntArray = append(acntArray, &hellopb.Account{Name: string(iter.Value())})
 		}
 	}
+
 	return &hellopb.Accounts{
-		Names: names,
+		Accounts: acntArray,
 	}, nil
 }
 

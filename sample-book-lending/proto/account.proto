@@ -17,7 +17,7 @@ message Account {
 // 図書館のアカウント
 message Accounts {
   // 借りる人の名前
-  repeated string names = 1;
+  repeated Account accounts = 1;
 }
 
 // 貸し出し状況

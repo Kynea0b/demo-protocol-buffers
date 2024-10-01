@@ -9,7 +9,7 @@
 
 ```
 % git clone https://github.com/Kynea0b/demo-protocol-buffers.git
-% cd sample-book-lending
+% cd demo-protocol-buffers/sample-book-lending
 ```
 
 ```shell

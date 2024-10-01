@@ -7,6 +7,11 @@
 
 実行例です。
 
+```
+% git clone https://github.com/Kynea0b/demo-protocol-buffers.git
+% cd sample-book-lending
+```
+
 ```shell
 % pwd
 demo-protocol-buffers/sample-book-lending

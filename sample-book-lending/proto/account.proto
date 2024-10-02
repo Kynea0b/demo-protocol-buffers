@@ -44,6 +44,7 @@ message BorrrowResponse {
   Account account = 1;
   //　借りた本
   Book book = 2;
+  // 貸し出し日
   google.protobuf.Timestamp timestamp = 3;
 }
 
@@ -77,6 +78,11 @@ service LendingBooksService {
   // 本の貸し出し情報を取得
   rpc GetLendingInfo (Book) returns (Accounts) {
     option (google.api.http) = { get: "/v1/info/book/{title}" };
+  }
+
+  // アカウント本の貸し出し日を取得
+  rpc GetBorrowedTime (Account) returns (BorrrowResponse) {
+    option (google.api.http) = { get: "/v1/info/account/{name}" };
   }
 }
 

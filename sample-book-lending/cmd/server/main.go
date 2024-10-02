@@ -1,31 +1,38 @@
 package main
 
 import (
+	myutil "sample-book-lending/util"
+
 	"github.com/syndtr/goleveldb/leveldb/util"
 
 	"context"
 	"fmt"
-	"google.golang.org/grpc/reflection"
 	"log"
 	"os"
 	"os/signal"
 	hellopb "sample-book-lending/pkg/grpc"
 
+	"google.golang.org/grpc/reflection"
+
 	// (一部抜粋)
-	"google.golang.org/grpc"
 	"net"
 
+	"google.golang.org/grpc"
+
 	// for proxy
+	"net/http"
+	"unsafe"
+
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/syndtr/goleveldb/leveldb"
 	"google.golang.org/grpc/credentials/insecure"
-	"net/http"
-	"unsafe"
 
 	// for timestamp
 	tspb "google.golang.org/protobuf/types/known/timestamppb"
 )
 
+// key: "本のタイトル" + "本のid", val: "貸与者の名前"
+// key: "貸与者の名前", val: "貸し出し日"
 var dbBook *leveldb.DB
 
 const (
@@ -90,16 +97,24 @@ type myServer struct {
 	hellopb.UnimplementedLendingBooksServiceServer
 }
 
+// time.Time型 -> 文字列
+func time2byteArray(t *tspb.Timestamp) []byte {
+	return []byte(t.AsTime().String())
+}
+
 // account.protoの`service`に定義したメソッドの実装
 // 本を借りるためのメソッド
 func (s *myServer) SendBorrow(ctx context.Context, req *hellopb.BorrowRequest) (*hellopb.BorrrowResponse, error) {
 	// 貸し出し表を更新
 	UpdateBookLendingCard(req.Book.Title, req.Account.Name, dbBook)
 
+	time := tspb.Now()
+	dbBook.Put([]byte(req.Account.Name), time2byteArray(time), nil)
+
 	return &hellopb.BorrrowResponse{
 		Account:   &hellopb.Account{Name: req.Account.Name},
 		Book:      &hellopb.Book{Title: req.Book.Title},
-		Timestamp: tspb.Now(),
+		Timestamp: time,
 	}, nil
 }
 
@@ -126,6 +141,21 @@ func (s *myServer) GetLendingInfo(ctx context.Context, req *hellopb.Book) (*hell
 
 	return &hellopb.Accounts{
 		Accounts: acntArray,
+	}, nil
+}
+
+func (s *myServer) GetBorrowedTime(ctx context.Context, req *hellopb.Account) (*hellopb.BorrrowResponse, error) {
+	data, _ := dbBook.Get([]byte(req.Name), nil)
+	time_str := *(*string)(unsafe.Pointer(&data))
+
+	t := tspb.New(myutil.StringToTime(time_str))
+
+	// todo
+	// specify book name
+
+	return &hellopb.BorrrowResponse{
+		Account:   &hellopb.Account{Name: req.Name},
+		Timestamp: t,
 	}, nil
 }
 

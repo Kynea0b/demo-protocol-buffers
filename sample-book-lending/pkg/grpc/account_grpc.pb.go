@@ -21,9 +21,10 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	LendingBooksService_SendBorrow_FullMethodName     = "/myapp.LendingBooksService/SendBorrow"
-	LendingBooksService_RegisterBook_FullMethodName   = "/myapp.LendingBooksService/RegisterBook"
-	LendingBooksService_GetLendingInfo_FullMethodName = "/myapp.LendingBooksService/GetLendingInfo"
+	LendingBooksService_SendBorrow_FullMethodName      = "/myapp.LendingBooksService/SendBorrow"
+	LendingBooksService_RegisterBook_FullMethodName    = "/myapp.LendingBooksService/RegisterBook"
+	LendingBooksService_GetLendingInfo_FullMethodName  = "/myapp.LendingBooksService/GetLendingInfo"
+	LendingBooksService_GetBorrowedTime_FullMethodName = "/myapp.LendingBooksService/GetBorrowedTime"
 )
 
 // LendingBooksServiceClient is the client API for LendingBooksService service.
@@ -38,6 +39,8 @@ type LendingBooksServiceClient interface {
 	RegisterBook(ctx context.Context, in *RegisterBookRequest, opts ...grpc.CallOption) (*RegisterBookResponse, error)
 	// 本の貸し出し情報を取得
 	GetLendingInfo(ctx context.Context, in *Book, opts ...grpc.CallOption) (*Accounts, error)
+	// アカウント本の貸し出し日を取得
+	GetBorrowedTime(ctx context.Context, in *Account, opts ...grpc.CallOption) (*BorrrowResponse, error)
 }
 
 type lendingBooksServiceClient struct {
@@ -78,6 +81,16 @@ func (c *lendingBooksServiceClient) GetLendingInfo(ctx context.Context, in *Book
 	return out, nil
 }
 
+func (c *lendingBooksServiceClient) GetBorrowedTime(ctx context.Context, in *Account, opts ...grpc.CallOption) (*BorrrowResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(BorrrowResponse)
+	err := c.cc.Invoke(ctx, LendingBooksService_GetBorrowedTime_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // LendingBooksServiceServer is the server API for LendingBooksService service.
 // All implementations must embed UnimplementedLendingBooksServiceServer
 // for forward compatibility.
@@ -90,6 +103,8 @@ type LendingBooksServiceServer interface {
 	RegisterBook(context.Context, *RegisterBookRequest) (*RegisterBookResponse, error)
 	// 本の貸し出し情報を取得
 	GetLendingInfo(context.Context, *Book) (*Accounts, error)
+	// アカウント本の貸し出し日を取得
+	GetBorrowedTime(context.Context, *Account) (*BorrrowResponse, error)
 	mustEmbedUnimplementedLendingBooksServiceServer()
 }
 
@@ -108,6 +123,9 @@ func (UnimplementedLendingBooksServiceServer) RegisterBook(context.Context, *Reg
 }
 func (UnimplementedLendingBooksServiceServer) GetLendingInfo(context.Context, *Book) (*Accounts, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetLendingInfo not implemented")
+}
+func (UnimplementedLendingBooksServiceServer) GetBorrowedTime(context.Context, *Account) (*BorrrowResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetBorrowedTime not implemented")
 }
 func (UnimplementedLendingBooksServiceServer) mustEmbedUnimplementedLendingBooksServiceServer() {}
 func (UnimplementedLendingBooksServiceServer) testEmbeddedByValue()                             {}
@@ -184,6 +202,24 @@ func _LendingBooksService_GetLendingInfo_Handler(srv interface{}, ctx context.Co
 	return interceptor(ctx, in, info, handler)
 }
 
+func _LendingBooksService_GetBorrowedTime_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Account)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LendingBooksServiceServer).GetBorrowedTime(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LendingBooksService_GetBorrowedTime_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LendingBooksServiceServer).GetBorrowedTime(ctx, req.(*Account))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // LendingBooksService_ServiceDesc is the grpc.ServiceDesc for LendingBooksService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -202,6 +238,10 @@ var LendingBooksService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetLendingInfo",
 			Handler:    _LendingBooksService_GetLendingInfo_Handler,
+		},
+		{
+			MethodName: "GetBorrowedTime",
+			Handler:    _LendingBooksService_GetBorrowedTime_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

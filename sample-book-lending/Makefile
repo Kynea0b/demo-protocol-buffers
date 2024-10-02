@@ -24,6 +24,9 @@ sendborrow1:
 sendborrow2:
 	grpcurl -plaintext -d '{"account":{ "name": "Tanaka"},"book":{ "title": "七つの海のティコ"}}' localhost:8080 myapp.LendingBooksService.SendBorrow
 
-show_lendinginfo:
+get_lendinginfo:
 	curl -X GET http://localhost:8090/v1/info/book/"七つの海のティコ"
+
+get_borrowedtime:
+	curl -X GET http://localhost:8090/v1/info/account/"Tanaka"
 	

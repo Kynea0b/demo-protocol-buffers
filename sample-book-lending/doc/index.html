@@ -385,7 +385,7 @@
                   <td>timestamp</td>
                   <td><a href="#google.protobuf.Timestamp">google.protobuf.Timestamp</a></td>
                   <td></td>
-                  <td><p> </p></td>
+                  <td><p>貸し出し日 </p></td>
                 </tr>
               
             </tbody>
@@ -492,6 +492,13 @@
                 <td><p>本の貸し出し情報を取得</p></td>
               </tr>
             
+              <tr>
+                <td>GetBorrowedTime</td>
+                <td><a href="#myapp.Account">Account</a></td>
+                <td><a href="#myapp.BorrrowResponse">BorrrowResponse</a></td>
+                <td><p>アカウント本の貸し出し日を取得</p></td>
+              </tr>
+            
           </tbody>
         </table>
 
@@ -526,6 +533,16 @@
                 <td>GetLendingInfo</td>
                 <td>GET</td>
                 <td>/v1/info/book/{title}</td>
+                <td></td>
+              </tr>
+              
+            
+              
+              
+              <tr>
+                <td>GetBorrowedTime</td>
+                <td>GET</td>
+                <td>/v1/info/account/{name}</td>
                 <td></td>
               </tr>
               

@@ -34,9 +34,9 @@ const (
 type LendingBooksServiceClient interface {
 	// 本を借りるためのメソッド
 	SendBorrow(ctx context.Context, in *BorrowRequest, opts ...grpc.CallOption) (*BorrrowResponse, error)
-	// 本の名前を指定すると、借りている人の名前一覧が取得できる
+	// 本の名前を指定すると、借りている人の名前一覧が取得
 	ShowBookInfo(ctx context.Context, in *Book, opts ...grpc.CallOption) (*Accounts, error)
-	// Returns a specific bookstore shelf.
+	// 本の貸し出し情報を取得
 	GetLendingInfo(ctx context.Context, in *Book, opts ...grpc.CallOption) (*Accounts, error)
 }
 
@@ -86,9 +86,9 @@ func (c *lendingBooksServiceClient) GetLendingInfo(ctx context.Context, in *Book
 type LendingBooksServiceServer interface {
 	// 本を借りるためのメソッド
 	SendBorrow(context.Context, *BorrowRequest) (*BorrrowResponse, error)
-	// 本の名前を指定すると、借りている人の名前一覧が取得できる
+	// 本の名前を指定すると、借りている人の名前一覧が取得
 	ShowBookInfo(context.Context, *Book) (*Accounts, error)
-	// Returns a specific bookstore shelf.
+	// 本の貸し出し情報を取得
 	GetLendingInfo(context.Context, *Book) (*Accounts, error)
 	mustEmbedUnimplementedLendingBooksServiceServer()
 }

@@ -405,7 +405,14 @@
                 <td>ShowBookInfo</td>
                 <td><a href="#Book">.Book</a></td>
                 <td><a href="#myapp.Accounts">Accounts</a></td>
-                <td><p>本の名前を指定すると、借りている人の名前一覧が取得できる</p></td>
+                <td><p>本の名前を指定すると、借りている人の名前一覧が取得</p></td>
+              </tr>
+            
+              <tr>
+                <td>GetLendingInfo</td>
+                <td><a href="#Book">.Book</a></td>
+                <td><a href="#myapp.Accounts">Accounts</a></td>
+                <td><p>本の貸し出し情報を取得</p></td>
               </tr>
             
           </tbody>
@@ -430,9 +437,19 @@
               
               <tr>
                 <td>ShowBookInfo</td>
-                <td>GET</td>
+                <td>POST</td>
                 <td>/v1/info/book</td>
                 <td>*</td>
+              </tr>
+              
+            
+              
+              
+              <tr>
+                <td>GetLendingInfo</td>
+                <td>GET</td>
+                <td>/v1/info/book/{title}</td>
+                <td></td>
               </tr>
               
             

@@ -22,7 +22,7 @@ const _ = grpc.SupportPackageIsVersion9
 
 const (
 	LendingBooksService_SendBorrow_FullMethodName     = "/myapp.LendingBooksService/SendBorrow"
-	LendingBooksService_ShowBookInfo_FullMethodName   = "/myapp.LendingBooksService/ShowBookInfo"
+	LendingBooksService_RegisterBook_FullMethodName   = "/myapp.LendingBooksService/RegisterBook"
 	LendingBooksService_GetLendingInfo_FullMethodName = "/myapp.LendingBooksService/GetLendingInfo"
 )
 
@@ -34,8 +34,8 @@ const (
 type LendingBooksServiceClient interface {
 	// 本を借りるためのメソッド
 	SendBorrow(ctx context.Context, in *BorrowRequest, opts ...grpc.CallOption) (*BorrrowResponse, error)
-	// 本の名前を指定すると、借りている人の名前一覧が取得
-	ShowBookInfo(ctx context.Context, in *Book, opts ...grpc.CallOption) (*Accounts, error)
+	// 新しい本を登録
+	RegisterBook(ctx context.Context, in *RegisterBookRequest, opts ...grpc.CallOption) (*RegisterBookResponse, error)
 	// 本の貸し出し情報を取得
 	GetLendingInfo(ctx context.Context, in *Book, opts ...grpc.CallOption) (*Accounts, error)
 }
@@ -58,10 +58,10 @@ func (c *lendingBooksServiceClient) SendBorrow(ctx context.Context, in *BorrowRe
 	return out, nil
 }
 
-func (c *lendingBooksServiceClient) ShowBookInfo(ctx context.Context, in *Book, opts ...grpc.CallOption) (*Accounts, error) {
+func (c *lendingBooksServiceClient) RegisterBook(ctx context.Context, in *RegisterBookRequest, opts ...grpc.CallOption) (*RegisterBookResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(Accounts)
-	err := c.cc.Invoke(ctx, LendingBooksService_ShowBookInfo_FullMethodName, in, out, cOpts...)
+	out := new(RegisterBookResponse)
+	err := c.cc.Invoke(ctx, LendingBooksService_RegisterBook_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -86,8 +86,8 @@ func (c *lendingBooksServiceClient) GetLendingInfo(ctx context.Context, in *Book
 type LendingBooksServiceServer interface {
 	// 本を借りるためのメソッド
 	SendBorrow(context.Context, *BorrowRequest) (*BorrrowResponse, error)
-	// 本の名前を指定すると、借りている人の名前一覧が取得
-	ShowBookInfo(context.Context, *Book) (*Accounts, error)
+	// 新しい本を登録
+	RegisterBook(context.Context, *RegisterBookRequest) (*RegisterBookResponse, error)
 	// 本の貸し出し情報を取得
 	GetLendingInfo(context.Context, *Book) (*Accounts, error)
 	mustEmbedUnimplementedLendingBooksServiceServer()
@@ -103,8 +103,8 @@ type UnimplementedLendingBooksServiceServer struct{}
 func (UnimplementedLendingBooksServiceServer) SendBorrow(context.Context, *BorrowRequest) (*BorrrowResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SendBorrow not implemented")
 }
-func (UnimplementedLendingBooksServiceServer) ShowBookInfo(context.Context, *Book) (*Accounts, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ShowBookInfo not implemented")
+func (UnimplementedLendingBooksServiceServer) RegisterBook(context.Context, *RegisterBookRequest) (*RegisterBookResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RegisterBook not implemented")
 }
 func (UnimplementedLendingBooksServiceServer) GetLendingInfo(context.Context, *Book) (*Accounts, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetLendingInfo not implemented")
@@ -148,20 +148,20 @@ func _LendingBooksService_SendBorrow_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
-func _LendingBooksService_ShowBookInfo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Book)
+func _LendingBooksService_RegisterBook_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RegisterBookRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(LendingBooksServiceServer).ShowBookInfo(ctx, in)
+		return srv.(LendingBooksServiceServer).RegisterBook(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: LendingBooksService_ShowBookInfo_FullMethodName,
+		FullMethod: LendingBooksService_RegisterBook_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LendingBooksServiceServer).ShowBookInfo(ctx, req.(*Book))
+		return srv.(LendingBooksServiceServer).RegisterBook(ctx, req.(*RegisterBookRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -196,8 +196,8 @@ var LendingBooksService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _LendingBooksService_SendBorrow_Handler,
 		},
 		{
-			MethodName: "ShowBookInfo",
-			Handler:    _LendingBooksService_ShowBookInfo_Handler,
+			MethodName: "RegisterBook",
+			Handler:    _LendingBooksService_RegisterBook_Handler,
 		},
 		{
 			MethodName: "GetLendingInfo",

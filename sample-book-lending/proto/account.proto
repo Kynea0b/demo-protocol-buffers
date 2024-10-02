@@ -43,14 +43,28 @@ message BorrrowResponse {
   Book book = 2;
 }
 
+// 本の登録リクエスト
+message RegisterBookRequest {
+  //　冊数
+  uint32 num = 1;
+  //　登録する本のタイトル
+  string title = 2;
+}
+
+message RegisterBookResponse {
+  //　冊数
+  uint32 num = 1;
+  //　登録された本のタイトル
+  string title = 2;
+}
 
 // 本の貸し出しサービス
 service LendingBooksService {
   // 本を借りるためのメソッド
   rpc SendBorrow (BorrowRequest) returns (BorrrowResponse);
   
-  // 本の名前を指定すると、借りている人の名前一覧が取得
-  rpc ShowBookInfo (Book) returns (Accounts) {
+  // 新しい本を登録
+  rpc RegisterBook (RegisterBookRequest) returns (RegisterBookResponse) {
     option (google.api.http) = {
       post: "/v1/info/book"
       body: "*"

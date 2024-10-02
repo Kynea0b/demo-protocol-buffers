@@ -15,12 +15,15 @@ gen_swagger:
 start_server:
 	cd cmd/server && go run main.go
 
-call_sendborrow_method_of_the_service:
+register_book:
+	curl -X POST -k http://localhost:8090/v1/info/book -d '{"num": 3, "title": "七つの海のティコ"}'
+
+sendborrow1:
 	grpcurl -plaintext -d '{"account":{ "name": "Tanaka"},"book":{ "title": "赤毛のアン"}}' localhost:8080 myapp.LendingBooksService.SendBorrow
 
-show_bookinfo:
-	curl -X POST -k http://localhost:8090/v1/info/book -d '{"title": "赤毛のアン"}'
+sendborrow2:
+	grpcurl -plaintext -d '{"account":{ "name": "Tanaka"},"book":{ "title": "七つの海のティコ"}}' localhost:8080 myapp.LendingBooksService.SendBorrow
 
 show_lendinginfo:
-	curl -X GET http://localhost:8090/v1/info/book/"赤毛のアン"
+	curl -X GET http://localhost:8090/v1/info/book/"七つの海のティコ"
 	

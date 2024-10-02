@@ -198,6 +198,14 @@
                   <a href="#myapp.BorrrowResponse"><span class="badge">M</span>BorrrowResponse</a>
                 </li>
               
+                <li>
+                  <a href="#myapp.RegisterBookRequest"><span class="badge">M</span>RegisterBookRequest</a>
+                </li>
+              
+                <li>
+                  <a href="#myapp.RegisterBookResponse"><span class="badge">M</span>RegisterBookResponse</a>
+                </li>
+              
               
               
               
@@ -380,6 +388,68 @@
 
         
       
+        <h3 id="myapp.RegisterBookRequest">RegisterBookRequest</h3>
+        <p>本の登録リクエスト</p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>num</td>
+                  <td><a href="#uint32">uint32</a></td>
+                  <td></td>
+                  <td><p>冊数 </p></td>
+                </tr>
+              
+                <tr>
+                  <td>title</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>登録する本のタイトル </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="myapp.RegisterBookResponse">RegisterBookResponse</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>num</td>
+                  <td><a href="#uint32">uint32</a></td>
+                  <td></td>
+                  <td><p>冊数 </p></td>
+                </tr>
+              
+                <tr>
+                  <td>title</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>登録された本のタイトル </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
 
       
 
@@ -402,10 +472,10 @@
               </tr>
             
               <tr>
-                <td>ShowBookInfo</td>
-                <td><a href="#Book">.Book</a></td>
-                <td><a href="#myapp.Accounts">Accounts</a></td>
-                <td><p>本の名前を指定すると、借りている人の名前一覧が取得</p></td>
+                <td>RegisterBook</td>
+                <td><a href="#myapp.RegisterBookRequest">RegisterBookRequest</a></td>
+                <td><a href="#myapp.RegisterBookResponse">RegisterBookResponse</a></td>
+                <td><p>新しい本を登録</p></td>
               </tr>
             
               <tr>
@@ -436,7 +506,7 @@
               
               
               <tr>
-                <td>ShowBookInfo</td>
+                <td>RegisterBook</td>
                 <td>POST</td>
                 <td>/v1/info/book</td>
                 <td>*</td>

@@ -116,6 +116,23 @@ func (s *myServer) ShowBookInfo(ctx context.Context, req *hellopb.Book) (*hellop
 	}, nil
 }
 
+// 本のタイトルから貸与者を取得
+func (s *myServer) GetLendingInfo(ctx context.Context, req *hellopb.Book) (*hellopb.Accounts, error) {
+	iter := dbBook.NewIterator(util.BytesPrefix([]byte(req.Title)), nil)
+	var acntArray []*hellopb.Account 
+	for iter.Next() {
+		if len(iter.Value()) != 0 {
+			// names = append(names, string(iter.Value()))
+			acntArray = append(acntArray, &hellopb.Account{Name: string(iter.Value())})
+		}
+	}
+
+	return &hellopb.Accounts{
+		Accounts: acntArray,
+	}, nil
+}
+
+
 // 自作サービス構造体のコンストラクタを定義
 func NewMyServer() *myServer {
 	return &myServer{}

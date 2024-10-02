@@ -56,5 +56,11 @@ service LendingBooksService {
       body: "*"
     };
   }
+  // Returns a specific bookstore shelf.
+  rpc GetLendingInfo (Book) returns (Accounts) {
+  // Client example - returns the first shelf:
+  //   curl http://DOMAIN_NAME/v1/shelves/1
+    option (google.api.http) = { get: "/v1/info/book/{title}" };
+  }
 }
 

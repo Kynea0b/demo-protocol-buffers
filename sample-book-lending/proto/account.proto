@@ -5,6 +5,9 @@ import "book.proto";
 
 option go_package = "./pkg/grpc";
 
+// for timestamp
+import "google/protobuf/timestamp.proto";
+
 // packageの宣言
 package myapp;
 
@@ -41,6 +44,7 @@ message BorrrowResponse {
   Account account = 1;
   //　借りた本
   Book book = 2;
+  google.protobuf.Timestamp timestamp = 3;
 }
 
 // 本の登録リクエスト

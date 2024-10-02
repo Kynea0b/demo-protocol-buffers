@@ -9,8 +9,27 @@ produces:
 paths:
   /v1/info/book:
     post:
-      summary: 本の名前を指定すると、借りている人の名前一覧が取得できる
-      operationId: LendingBooksService_ShowBookInfo
+      summary: 新しい本を登録
+      operationId: LendingBooksService_RegisterBook
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/myappRegisterBookResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/myappRegisterBookRequest'
+  /v1/info/book/{title}:
+    get:
+      summary: 本の貸し出し情報を取得
+      operationId: LendingBooksService_GetLendingInfo
       responses:
         "200":
           description: A successful response.
@@ -21,11 +40,11 @@ paths:
           schema:
             $ref: '#/definitions/rpcStatus'
       parameters:
-        - name: body
-          in: body
+        - name: title
+          description: 本のタイトル
+          in: path
           required: true
-          schema:
-            $ref: '#/definitions/Book'
+          type: string
 definitions:
   Book:
     type: object
@@ -44,10 +63,11 @@ definitions:
   myappAccounts:
     type: object
     properties:
-      names:
+      accounts:
         type: array
         items:
-          type: string
+          type: object
+          $ref: '#/definitions/myappAccount'
         title: 借りる人の名前
     title: 図書館のアカウント
   myappBorrrowResponse:
@@ -59,6 +79,30 @@ definitions:
       book:
         $ref: '#/definitions/Book'
         title: 借りた本
+      timestamp:
+        type: string
+        format: date-time
+  myappRegisterBookRequest:
+    type: object
+    properties:
+      num:
+        type: integer
+        format: int64
+        title: 冊数
+      title:
+        type: string
+        title: 登録する本のタイトル
+    title: 本の登録リクエスト
+  myappRegisterBookResponse:
+    type: object
+    properties:
+      num:
+        type: integer
+        format: int64
+        title: 冊数
+      title:
+        type: string
+        title: 登録された本のタイトル
   protobufAny:
     type: object
     properties:

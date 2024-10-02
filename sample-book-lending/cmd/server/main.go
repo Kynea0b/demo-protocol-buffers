@@ -21,6 +21,9 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 	"net/http"
 	"unsafe"
+
+	// for timestamp
+	tspb "google.golang.org/protobuf/types/known/timestamppb"
 )
 
 var dbBook *leveldb.DB
@@ -94,17 +97,18 @@ func (s *myServer) SendBorrow(ctx context.Context, req *hellopb.BorrowRequest) (
 	UpdateBookLendingCard(req.Book.Title, req.Account.Name, dbBook)
 
 	return &hellopb.BorrrowResponse{
-		Account: &hellopb.Account{Name: req.Account.Name},
-		Book:    &hellopb.Book{Title: req.Book.Title},
+		Account:   &hellopb.Account{Name: req.Account.Name},
+		Book:      &hellopb.Book{Title: req.Book.Title},
+		Timestamp: tspb.Now(),
 	}, nil
 }
 
 // 本のタイトルから貸与者を取得
 func (s *myServer) RegisterBook(ctx context.Context, req *hellopb.RegisterBookRequest) (*hellopb.RegisterBookResponse, error) {
 	registerBooks(req.Title, int(req.Num), dbBook)
-	
+
 	return &hellopb.RegisterBookResponse{
-		Num: req.Num,
+		Num:   req.Num,
 		Title: req.Title,
 	}, nil
 }
@@ -112,7 +116,7 @@ func (s *myServer) RegisterBook(ctx context.Context, req *hellopb.RegisterBookRe
 // 本のタイトルから貸与者を取得
 func (s *myServer) GetLendingInfo(ctx context.Context, req *hellopb.Book) (*hellopb.Accounts, error) {
 	iter := dbBook.NewIterator(util.BytesPrefix([]byte(req.Title)), nil)
-	var acntArray []*hellopb.Account 
+	var acntArray []*hellopb.Account
 	for iter.Next() {
 		if len(iter.Value()) != 0 {
 			// names = append(names, string(iter.Value()))
@@ -124,7 +128,6 @@ func (s *myServer) GetLendingInfo(ctx context.Context, req *hellopb.Book) (*hell
 		Accounts: acntArray,
 	}, nil
 }
-
 
 // 自作サービス構造体のコンストラクタを定義
 func NewMyServer() *myServer {

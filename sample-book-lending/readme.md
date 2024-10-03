@@ -43,7 +43,7 @@ demo-protocol-buffers/sample-book-lending
 図書館に新しい本を登録します。
 
 ```shell
-make register_book
+% make register_book
 ```
 
 新しく登録された本の貸し出しリクエストを送ります。

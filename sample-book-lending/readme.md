@@ -26,13 +26,30 @@ demo-protocol-buffers/sample-book-lending
 貸し出しリクエストを送ってみます。
 
 ```shell
-% make call_sendborrow_method_of_the_service
+% make sendborrow1
 ```
 
+貸し出し状況を閲覧します。
+
+```shell
+% make get_lendinginfo
+```
 貸し出し状況を閲覧します。※こちらは仮実装です。
 
 ```shell
-% make show_accountinfo
+% make get_borrowedtime
+```
+
+図書館に新しい本を登録します。
+
+```shell
+make register_book
+```
+
+新しく登録された本の貸し出しリクエストを送ります。
+
+```shell
+% make sendborrow1
 ```
 
 ## Protocol Documentation

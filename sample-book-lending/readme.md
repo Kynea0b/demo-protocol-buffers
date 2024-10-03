@@ -49,7 +49,7 @@ demo-protocol-buffers/sample-book-lending
 新しく登録された本の貸し出しリクエストを送ります。
 
 ```shell
-% make sendborrow1
+% make sendborrow2
 ```
 
 ## Protocol Documentation

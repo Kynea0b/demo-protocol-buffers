@@ -35,17 +35,14 @@ import (
 // key: "貸与者の名前", val: "貸し出し日"
 var dbBook *leveldb.DB
 
-const (
-	title_book1 = "赤毛のアン"
-	title_book2 = "小公女セーラ"
-	title_book3 = "フランダースの犬"
-)
+type BookList struct {
+	books []Book
+}
 
-var (
-	num_book1 int
-	num_book2 int
-	num_book3 int
-)
+type Book struct {
+	title string
+	num   int
+}
 
 // var accountdb *leveldb.DB
 // 本の追加
@@ -181,16 +178,21 @@ func registerBooks(title string, cnt int, dbBook *leveldb.DB) {
 }
 
 func main() {
-	num_book1 = 3
-	num_book2 = 3
-	num_book3 = 3
+	title_book1 := "赤毛のアン"
+	title_book2 := "小公女セーラ"
+	title_book3 := "フランダースの犬"
+
+	b1 := Book{title: title_book1, num: 3}
+	b2 := Book{title: title_book2, num: 3}
+	b3 := Book{title: title_book3, num: 3}
+
 	// bool library
 	dbBook, _ = leveldb.OpenFile("path/to/bookdb", nil)
 	// 書き込み
 	// 貸し出し書籍各3冊
-	registerBooks(title_book1, num_book1, dbBook)
-	registerBooks(title_book2, num_book2, dbBook)
-	registerBooks(title_book3, num_book3, dbBook)
+	registerBooks(b1.title, b1.num, dbBook)
+	registerBooks(b2.title, b2.num, dbBook)
+	registerBooks(b2.title, b3.num, dbBook)
 
 	// 1. 8080番portのLisnterを作成
 	port := 8080

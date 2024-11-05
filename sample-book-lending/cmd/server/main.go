@@ -35,6 +35,16 @@ import (
 // key: "貸与者の名前", val: "貸し出し日"
 var dbBook *leveldb.DB
 
+func init() {
+	// book library
+	loaddb()
+}
+
+func loaddb() {
+	// bool library
+	dbBook, _ = leveldb.OpenFile("path/to/bookdb", nil)
+}
+
 type Book struct {
 	title string
 	num   int
@@ -188,9 +198,7 @@ func main() {
 
 	books := []Book{b1, b2, b3}
 
-	// bool library
-	dbBook, _ = leveldb.OpenFile("path/to/bookdb", nil)
-	// 書き込み
+	// 本の初期登録
 	registerBooks(books, dbBook)
 
 	// 1. 8080番portのLisnterを作成

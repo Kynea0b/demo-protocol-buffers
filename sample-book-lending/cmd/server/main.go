@@ -35,10 +35,6 @@ import (
 // key: "貸与者の名前", val: "貸し出し日"
 var dbBook *leveldb.DB
 
-type BookList struct {
-	books []Book
-}
-
 type Book struct {
 	title string
 	num   int
@@ -117,7 +113,7 @@ func (s *myServer) SendBorrow(ctx context.Context, req *hellopb.BorrowRequest) (
 
 // 本のタイトルから貸与者を取得
 func (s *myServer) RegisterBook(ctx context.Context, req *hellopb.RegisterBookRequest) (*hellopb.RegisterBookResponse, error) {
-	registerBooks(req.Title, int(req.Num), dbBook)
+	registerBook(req.Title, int(req.Num), dbBook)
 
 	return &hellopb.RegisterBookResponse{
 		Num:   req.Num,
@@ -168,7 +164,7 @@ func parseStoreKey(key string, id int) []byte {
 }
 
 // 本のタイトルと冊数を指定してDB登録
-func registerBooks(title string, cnt int, dbBook *leveldb.DB) {
+func registerBook(title string, cnt int, dbBook *leveldb.DB) {
 	for i := 0; i < cnt; i++ {
 		storekey := parseStoreKey(title, i)
 		// valueにはアカウントの`name`を登録
@@ -177,22 +173,25 @@ func registerBooks(title string, cnt int, dbBook *leveldb.DB) {
 	}
 }
 
-func main() {
-	title_book1 := "赤毛のアン"
-	title_book2 := "小公女セーラ"
-	title_book3 := "フランダースの犬"
+func registerBooks(books []Book, dbBook *leveldb.DB) {
+	for _, b := range books {
+		registerBook(b.title, b.num, dbBook)
+	}
+}
 
-	b1 := Book{title: title_book1, num: 3}
-	b2 := Book{title: title_book2, num: 3}
-	b3 := Book{title: title_book3, num: 3}
+func main() {
+
+	// 貸し出し書籍各3冊
+	b1 := Book{title: "赤毛のアン", num: 3}
+	b2 := Book{title: "小公女セーラ", num: 3}
+	b3 := Book{title: "フランダースの犬", num: 3}
+
+	books := []Book{b1, b2, b3}
 
 	// bool library
 	dbBook, _ = leveldb.OpenFile("path/to/bookdb", nil)
 	// 書き込み
-	// 貸し出し書籍各3冊
-	registerBooks(b1.title, b1.num, dbBook)
-	registerBooks(b2.title, b2.num, dbBook)
-	registerBooks(b2.title, b3.num, dbBook)
+	registerBooks(books, dbBook)
 
 	// 1. 8080番portのLisnterを作成
 	port := 8080

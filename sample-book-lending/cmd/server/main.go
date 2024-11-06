@@ -71,7 +71,7 @@ func (dbBook *GoLevelDB) getItem(key string) string {
 	return res
 }
 
-func (dbBook *GoLevelDB) UpdateBookLendingCard(title string, name string) {
+func (dbBook *GoLevelDB) updateBookLendingCard(title string, name string) {
 	// todo: panic occurs when the key does not exist
 	// タイトル前方一致で取得
 	iter := dbBook.db.NewIterator(util.BytesPrefix([]byte(title)), nil)
@@ -99,6 +99,22 @@ func (dbBook *GoLevelDB) UpdateBookLendingCard(title string, name string) {
 	}
 }
 
+// 本のタイトルと冊数を指定してDB登録
+func (dbBook *GoLevelDB) registerBook(title string, cnt int) {
+	for i := 0; i < cnt; i++ {
+		storekey := parseStoreKey(title, i)
+		// valueにはアカウントの`name`を登録
+		// 初期登録では誰も借りていないので、空文字
+		_ = dbBook.db.Put(storekey, []byte(""), nil)
+	}
+}
+
+func (dbBook *GoLevelDB) registerBooks(books []Book) {
+	for _, b := range books {
+		dbBook.registerBook(b.title, b.num)
+	}
+}
+
 type myServer struct {
 	hellopb.UnimplementedLendingBooksServiceServer
 }
@@ -112,7 +128,7 @@ func time2byteArray(t *tspb.Timestamp) []byte {
 // 本を借りるためのメソッド
 func (s *myServer) SendBorrow(ctx context.Context, req *hellopb.BorrowRequest) (*hellopb.BorrrowResponse, error) {
 	// 貸し出し表を更新
-	dbBook.UpdateBookLendingCard(req.Book.Title, req.Account.Name)
+	dbBook.updateBookLendingCard(req.Book.Title, req.Account.Name)
 
 	time := tspb.Now()
 	dbBook.db.Put([]byte(req.Account.Name), time2byteArray(time), nil)
@@ -174,22 +190,6 @@ func NewMyServer() *myServer {
 func parseStoreKey(key string, id int) []byte {
 	storekey := fmt.Sprintf("%s:%d", key, id)
 	return []byte(storekey)
-}
-
-// 本のタイトルと冊数を指定してDB登録
-func (dbBook *GoLevelDB) registerBook(title string, cnt int) {
-	for i := 0; i < cnt; i++ {
-		storekey := parseStoreKey(title, i)
-		// valueにはアカウントの`name`を登録
-		// 初期登録では誰も借りていないので、空文字
-		_ = dbBook.db.Put(storekey, []byte(""), nil)
-	}
-}
-
-func (dbBook *GoLevelDB) registerBooks(books []Book) {
-	for _, b := range books {
-		dbBook.registerBook(b.title, b.num)
-	}
 }
 
 func main() {

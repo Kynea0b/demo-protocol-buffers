@@ -31,28 +31,21 @@ import (
 	tspb "google.golang.org/protobuf/types/known/timestamppb"
 )
 
-// key: "本のタイトル" + "本のid", val: "貸与者の名前"
-// key: "貸与者の名前", val: "貸し出し日"
-var dbBook = NewGoLevelDB("path/to/bookdb")
-
 type GoLevelDB struct {
 	db *leveldb.DB
 }
 
-
-func NewGoLevelDB(path string) *GoLevelDB{
+func NewGoLevelDB(path string) *GoLevelDB {
 	db, _ := leveldb.OpenFile(path, nil)
 	return &GoLevelDB{db: db}
 }
 
-// func loaddb() {
-// 	// bool library
-// 	dbBook, _ = leveldb.OpenFile("path/to/bookdb", nil)
-// }
+// key: "本のタイトル" + "本のid", val: "貸与者の名前"
+// key: "貸与者の名前", val: "貸し出し日"
+var dbBook = NewGoLevelDB("path/to/bookdb")
 
 func init() {
-	// book library
-	// loaddb()
+
 }
 
 type Book struct {
@@ -78,7 +71,7 @@ func (dbBook *GoLevelDB) getItem(key string) string {
 	return res
 }
 
-func (dbBook *GoLevelDB)  UpdateBookLendingCard(title string, name string) {
+func (dbBook *GoLevelDB) UpdateBookLendingCard(title string, name string) {
 	// todo: panic occurs when the key does not exist
 	// タイトル前方一致で取得
 	iter := dbBook.db.NewIterator(util.BytesPrefix([]byte(title)), nil)

@@ -1,6 +1,7 @@
 package main
 
 import (
+	mydb "sample-book-lending/db"
 	myutil "sample-book-lending/util"
 
 	"github.com/syndtr/goleveldb/leveldb/util"
@@ -24,96 +25,91 @@ import (
 	"unsafe"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-	"github.com/syndtr/goleveldb/leveldb"
+	//"github.com/syndtr/goleveldb/leveldb"
 	"google.golang.org/grpc/credentials/insecure"
 
 	// for timestamp
 	tspb "google.golang.org/protobuf/types/known/timestamppb"
 )
 
-type GoLevelDB struct {
-	db *leveldb.DB
-}
-
-func NewGoLevelDB(path string) *GoLevelDB {
-	db, _ := leveldb.OpenFile(path, nil)
-	return &GoLevelDB{db: db}
-}
+//type GoLevelDB struct {
+//	db *leveldb.DB
+//}
+//
+//func NewGoLevelDB(path string) *GoLevelDB {
+//	db, _ := leveldb.OpenFile(path, nil)
+//	return &GoLevelDB{db: db}
+//}
 
 // key: "本のタイトル" + "本のid", val: "貸与者の名前"
 // key: "貸与者の名前", val: "貸し出し日"
-var dbBook = NewGoLevelDB("path/to/bookdb")
+var dbBook = mydb.NewGoLevelDB("path/to/bookdb")
 
 func init() {
 
 }
 
-type Book struct {
-	title string
-	num   int
-}
-
-// var accountdb *leveldb.DB
-// 本の追加
-func (dbBook *GoLevelDB) addItem(key string, val string) {
-	_ = dbBook.db.Put([]byte(key), []byte(val), nil)
-}
-
-// 本の削除
-func (dbBook *GoLevelDB) deleteItem(key string) {
-	_ = dbBook.db.Delete([]byte(key), nil)
-}
-
-// 本の冊数取得
-func (dbBook *GoLevelDB) getItem(key string) string {
-	data, _ := dbBook.db.Get([]byte(key), nil)
-	res := *(*string)(unsafe.Pointer(&data))
-	return res
-}
-
-func (dbBook *GoLevelDB) updateBookLendingCard(title string, name string) {
-	// todo: panic occurs when the key does not exist
-	// タイトル前方一致で取得
-	iter := dbBook.db.NewIterator(util.BytesPrefix([]byte(title)), nil)
-	var key []byte
-	for iter.Next() {
-		//
-		value := iter.Value()
-		if len(value) == 0 {
-			fmt.Println("貸し出し可")
-			key = iter.Key()
-			break
-		} else {
-			fmt.Println("貸し出し中")
-		}
-	}
-
-	// 貸す本
-	fmt.Println("Lend this book: ", string(key))
-
-	// 貸与者の名前を書き込み
-	err := dbBook.db.Put(key, []byte(name), nil)
-	if err != nil {
-		fmt.Println("DB Error")
-		return
-	}
-}
-
-// 本のタイトルと冊数を指定してDB登録
-func (dbBook *GoLevelDB) registerBook(title string, cnt int) {
-	for i := 0; i < cnt; i++ {
-		storekey := parseStoreKey(title, i)
-		// valueにはアカウントの`name`を登録
-		// 初期登録では誰も借りていないので、空文字
-		_ = dbBook.db.Put(storekey, []byte(""), nil)
-	}
-}
-
-func (dbBook *GoLevelDB) registerBooks(books []Book) {
-	for _, b := range books {
-		dbBook.registerBook(b.title, b.num)
-	}
-}
+//// var accountdb *leveldb.DB
+//// 本の追加
+//func (dbBook *GoLevelDB) addItem(key string, val string) {
+//	_ = dbBook.db.Put([]byte(key), []byte(val), nil)
+//}
+//
+//// 本の削除
+//func (dbBook *GoLevelDB) deleteItem(key string) {
+//	_ = dbBook.db.Delete([]byte(key), nil)
+//}
+//
+//// 本の冊数取得
+//func (dbBook *GoLevelDB) getItem(key string) string {
+//	data, _ := dbBook.db.Get([]byte(key), nil)
+//	res := *(*string)(unsafe.Pointer(&data))
+//	return res
+//}
+//
+//func (dbBook *GoLevelDB) updateBookLendingCard(title string, name string) {
+//	// todo: panic occurs when the key does not exist
+//	// タイトル前方一致で取得
+//	iter := dbBook.db.NewIterator(util.BytesPrefix([]byte(title)), nil)
+//	var key []byte
+//	for iter.Next() {
+//		//
+//		value := iter.Value()
+//		if len(value) == 0 {
+//			fmt.Println("貸し出し可")
+//			key = iter.Key()
+//			break
+//		} else {
+//			fmt.Println("貸し出し中")
+//		}
+//	}
+//
+//	// 貸す本
+//	fmt.Println("Lend this book: ", string(key))
+//
+//	// 貸与者の名前を書き込み
+//	err := dbBook.db.Put(key, []byte(name), nil)
+//	if err != nil {
+//		fmt.Println("DB Error")
+//		return
+//	}
+//}
+//
+//// 本のタイトルと冊数を指定してDB登録
+//func (dbBook *GoLevelDB) registerBook(title string, cnt int) {
+//	for i := 0; i < cnt; i++ {
+//		storekey := parseStoreKey(title, i)
+//		// valueにはアカウントの`name`を登録
+//		// 初期登録では誰も借りていないので、空文字
+//		_ = dbBook.db.Put(storekey, []byte(""), nil)
+//	}
+//}
+//
+//func (dbBook *GoLevelDB) registerBooks(books []Book) {
+//	for _, b := range books {
+//		dbBook.registerBook(b.title, b.num)
+//	}
+//}
 
 type myServer struct {
 	hellopb.UnimplementedLendingBooksServiceServer
@@ -128,10 +124,10 @@ func time2byteArray(t *tspb.Timestamp) []byte {
 // 本を借りるためのメソッド
 func (s *myServer) SendBorrow(ctx context.Context, req *hellopb.BorrowRequest) (*hellopb.BorrrowResponse, error) {
 	// 貸し出し表を更新
-	dbBook.updateBookLendingCard(req.Book.Title, req.Account.Name)
+	dbBook.UpdateBookLendingCard(req.Book.Title, req.Account.Name)
 
 	time := tspb.Now()
-	dbBook.db.Put([]byte(req.Account.Name), time2byteArray(time), nil)
+	dbBook.Db.Put([]byte(req.Account.Name), time2byteArray(time), nil)
 
 	return &hellopb.BorrrowResponse{
 		Account:   &hellopb.Account{Name: req.Account.Name},
@@ -142,7 +138,7 @@ func (s *myServer) SendBorrow(ctx context.Context, req *hellopb.BorrowRequest) (
 
 // 本のタイトルから貸与者を取得
 func (s *myServer) RegisterBook(ctx context.Context, req *hellopb.RegisterBookRequest) (*hellopb.RegisterBookResponse, error) {
-	dbBook.registerBook(req.Title, int(req.Num))
+	dbBook.RegisterBook(req.Title, int(req.Num))
 
 	return &hellopb.RegisterBookResponse{
 		Num:   req.Num,
@@ -152,7 +148,7 @@ func (s *myServer) RegisterBook(ctx context.Context, req *hellopb.RegisterBookRe
 
 // 本のタイトルから貸与者を取得
 func (s *myServer) GetLendingInfo(ctx context.Context, req *hellopb.Book) (*hellopb.Accounts, error) {
-	iter := dbBook.db.NewIterator(util.BytesPrefix([]byte(req.Title)), nil)
+	iter := dbBook.Db.NewIterator(util.BytesPrefix([]byte(req.Title)), nil)
 	var acntArray []*hellopb.Account
 	for iter.Next() {
 		if len(iter.Value()) != 0 {
@@ -167,7 +163,7 @@ func (s *myServer) GetLendingInfo(ctx context.Context, req *hellopb.Book) (*hell
 }
 
 func (s *myServer) GetBorrowedTime(ctx context.Context, req *hellopb.Account) (*hellopb.BorrrowResponse, error) {
-	data, _ := dbBook.db.Get([]byte(req.Name), nil)
+	data, _ := dbBook.Db.Get([]byte(req.Name), nil)
 	time_str := *(*string)(unsafe.Pointer(&data))
 
 	t := tspb.New(myutil.StringToTime(time_str))
@@ -195,14 +191,14 @@ func parseStoreKey(key string, id int) []byte {
 func main() {
 
 	// 貸し出し書籍各3冊
-	b1 := Book{title: "赤毛のアン", num: 3}
-	b2 := Book{title: "小公女セーラ", num: 3}
-	b3 := Book{title: "フランダースの犬", num: 3}
+	b1 := mydb.Book{Title: "赤毛のアン", Num: 3}
+	b2 := mydb.Book{Title: "小公女セーラ", Num: 3}
+	b3 := mydb.Book{Title: "フランダースの犬", Num: 3}
 
-	books := []Book{b1, b2, b3}
+	books := []mydb.Book{b1, b2, b3}
 
 	// 本の初期登録
-	dbBook.registerBooks(books)
+	dbBook.RegisterBooks(books)
 
 	// 1. 8080番portのLisnterを作成
 	port := 8080

@@ -3,6 +3,7 @@ package util
 import (
 	// "fmt"
 	"encoding/binary"
+	"fmt"
 	"strings"
 	"time"
 )
@@ -13,6 +14,12 @@ func EncodeUint(x uint64) ([]byte, int) {
 	n := binary.PutUvarint(buf, x)
 
 	return buf[:n], n
+}
+
+// 本のタイトルからkeyに変換します
+func ParseStoreKey(key string, id int) []byte {
+	storekey := fmt.Sprintf("%s:%d", key, id)
+	return []byte(storekey)
 }
 
 func DecodeUint(buf []byte) uint64 {

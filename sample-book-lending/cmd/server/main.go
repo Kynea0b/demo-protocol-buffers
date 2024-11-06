@@ -33,16 +33,26 @@ import (
 
 // key: "本のタイトル" + "本のid", val: "貸与者の名前"
 // key: "貸与者の名前", val: "貸し出し日"
-var dbBook *leveldb.DB
+var dbBook = NewGoLevelDB("path/to/bookdb")
+
+type GoLevelDB struct {
+	db *leveldb.DB
+}
+
+
+func NewGoLevelDB(path string) *GoLevelDB{
+	db, _ := leveldb.OpenFile(path, nil)
+	return &GoLevelDB{db: db}
+}
+
+// func loaddb() {
+// 	// bool library
+// 	dbBook, _ = leveldb.OpenFile("path/to/bookdb", nil)
+// }
 
 func init() {
 	// book library
-	loaddb()
-}
-
-func loaddb() {
-	// bool library
-	dbBook, _ = leveldb.OpenFile("path/to/bookdb", nil)
+	// loaddb()
 }
 
 type Book struct {
@@ -52,26 +62,26 @@ type Book struct {
 
 // var accountdb *leveldb.DB
 // 本の追加
-func addItem(key string, val string) {
-	_ = dbBook.Put([]byte(key), []byte(val), nil)
+func (dbBook *GoLevelDB) addItem(key string, val string) {
+	_ = dbBook.db.Put([]byte(key), []byte(val), nil)
 }
 
 // 本の削除
-func deleteItem(key string) {
-	_ = dbBook.Delete([]byte(key), nil)
+func (dbBook *GoLevelDB) deleteItem(key string) {
+	_ = dbBook.db.Delete([]byte(key), nil)
 }
 
 // 本の冊数取得
-func getItem(key string) string {
-	data, _ := dbBook.Get([]byte(key), nil)
+func (dbBook *GoLevelDB) getItem(key string) string {
+	data, _ := dbBook.db.Get([]byte(key), nil)
 	res := *(*string)(unsafe.Pointer(&data))
 	return res
 }
 
-func UpdateBookLendingCard(title string, name string, db *leveldb.DB) {
+func (dbBook *GoLevelDB)  UpdateBookLendingCard(title string, name string) {
 	// todo: panic occurs when the key does not exist
 	// タイトル前方一致で取得
-	iter := db.NewIterator(util.BytesPrefix([]byte(title)), nil)
+	iter := dbBook.db.NewIterator(util.BytesPrefix([]byte(title)), nil)
 	var key []byte
 	for iter.Next() {
 		//
@@ -89,7 +99,7 @@ func UpdateBookLendingCard(title string, name string, db *leveldb.DB) {
 	fmt.Println("Lend this book: ", string(key))
 
 	// 貸与者の名前を書き込み
-	err := db.Put(key, []byte(name), nil)
+	err := dbBook.db.Put(key, []byte(name), nil)
 	if err != nil {
 		fmt.Println("DB Error")
 		return
@@ -109,10 +119,10 @@ func time2byteArray(t *tspb.Timestamp) []byte {
 // 本を借りるためのメソッド
 func (s *myServer) SendBorrow(ctx context.Context, req *hellopb.BorrowRequest) (*hellopb.BorrrowResponse, error) {
 	// 貸し出し表を更新
-	UpdateBookLendingCard(req.Book.Title, req.Account.Name, dbBook)
+	dbBook.UpdateBookLendingCard(req.Book.Title, req.Account.Name)
 
 	time := tspb.Now()
-	dbBook.Put([]byte(req.Account.Name), time2byteArray(time), nil)
+	dbBook.db.Put([]byte(req.Account.Name), time2byteArray(time), nil)
 
 	return &hellopb.BorrrowResponse{
 		Account:   &hellopb.Account{Name: req.Account.Name},
@@ -123,7 +133,7 @@ func (s *myServer) SendBorrow(ctx context.Context, req *hellopb.BorrowRequest) (
 
 // 本のタイトルから貸与者を取得
 func (s *myServer) RegisterBook(ctx context.Context, req *hellopb.RegisterBookRequest) (*hellopb.RegisterBookResponse, error) {
-	registerBook(req.Title, int(req.Num), dbBook)
+	dbBook.registerBook(req.Title, int(req.Num))
 
 	return &hellopb.RegisterBookResponse{
 		Num:   req.Num,
@@ -133,7 +143,7 @@ func (s *myServer) RegisterBook(ctx context.Context, req *hellopb.RegisterBookRe
 
 // 本のタイトルから貸与者を取得
 func (s *myServer) GetLendingInfo(ctx context.Context, req *hellopb.Book) (*hellopb.Accounts, error) {
-	iter := dbBook.NewIterator(util.BytesPrefix([]byte(req.Title)), nil)
+	iter := dbBook.db.NewIterator(util.BytesPrefix([]byte(req.Title)), nil)
 	var acntArray []*hellopb.Account
 	for iter.Next() {
 		if len(iter.Value()) != 0 {
@@ -148,7 +158,7 @@ func (s *myServer) GetLendingInfo(ctx context.Context, req *hellopb.Book) (*hell
 }
 
 func (s *myServer) GetBorrowedTime(ctx context.Context, req *hellopb.Account) (*hellopb.BorrrowResponse, error) {
-	data, _ := dbBook.Get([]byte(req.Name), nil)
+	data, _ := dbBook.db.Get([]byte(req.Name), nil)
 	time_str := *(*string)(unsafe.Pointer(&data))
 
 	t := tspb.New(myutil.StringToTime(time_str))
@@ -174,18 +184,18 @@ func parseStoreKey(key string, id int) []byte {
 }
 
 // 本のタイトルと冊数を指定してDB登録
-func registerBook(title string, cnt int, dbBook *leveldb.DB) {
+func (dbBook *GoLevelDB) registerBook(title string, cnt int) {
 	for i := 0; i < cnt; i++ {
 		storekey := parseStoreKey(title, i)
 		// valueにはアカウントの`name`を登録
 		// 初期登録では誰も借りていないので、空文字
-		_ = dbBook.Put(storekey, []byte(""), nil)
+		_ = dbBook.db.Put(storekey, []byte(""), nil)
 	}
 }
 
-func registerBooks(books []Book, dbBook *leveldb.DB) {
+func (dbBook *GoLevelDB) registerBooks(books []Book) {
 	for _, b := range books {
-		registerBook(b.title, b.num, dbBook)
+		dbBook.registerBook(b.title, b.num)
 	}
 }
 
@@ -199,7 +209,7 @@ func main() {
 	books := []Book{b1, b2, b3}
 
 	// 本の初期登録
-	registerBooks(books, dbBook)
+	dbBook.registerBooks(books)
 
 	// 1. 8080番portのLisnterを作成
 	port := 8080

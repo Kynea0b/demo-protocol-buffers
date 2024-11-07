@@ -49,7 +49,7 @@ func time2byteArray(t *tspb.Timestamp) []byte {
 	return []byte(t.AsTime().String())
 }
 
-// account.protoの`service`に定義したメソッドの実装
+// SendBorrow account.protoの`service`に定義したメソッドの実装
 // 本を借りるためのメソッド
 func (s *myServer) SendBorrow(ctx context.Context, req *hellopb.BorrowRequest) (*hellopb.BorrrowResponse, error) {
 	// 貸し出し表を更新
@@ -65,7 +65,7 @@ func (s *myServer) SendBorrow(ctx context.Context, req *hellopb.BorrowRequest) (
 	}, nil
 }
 
-// 本のタイトルから貸与者を取得
+// RegisterBook 本のタイトルから貸与者を取得
 func (s *myServer) RegisterBook(ctx context.Context, req *hellopb.RegisterBookRequest) (*hellopb.RegisterBookResponse, error) {
 	dbBook.RegisterBook(req.Title, int(req.Num))
 
@@ -75,7 +75,7 @@ func (s *myServer) RegisterBook(ctx context.Context, req *hellopb.RegisterBookRe
 	}, nil
 }
 
-// 本のタイトルから貸与者を取得
+// GetLendingInfo 本のタイトルから貸与者を取得
 func (s *myServer) GetLendingInfo(ctx context.Context, req *hellopb.Book) (*hellopb.Accounts, error) {
 	iter := dbBook.Db.NewIterator(util.BytesPrefix([]byte(req.Title)), nil)
 	var acntArray []*hellopb.Account
@@ -106,7 +106,7 @@ func (s *myServer) GetBorrowedTime(ctx context.Context, req *hellopb.Account) (*
 	}, nil
 }
 
-// 自作サービス構造体のコンストラクタを定義
+// NewMyServer 自作サービス構造体のコンストラクタを定義
 func NewMyServer() *myServer {
 	return &myServer{}
 }

@@ -1,0 +1,241 @@
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "com.github.jengelman.gradle.plugins:shadow:5.1.0"
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:2.2.2.RELEASE"
+        classpath "io.spring.gradle:dependency-management-plugin:1.0.8.RELEASE"
+        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.8'
+//        classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4"
+    }
+}
+
+allprojects {
+    group = 'io.github.protobuf-x'
+    version = System.getenv('CIRCLE_TAG') ?: 'local-SNAPSHOT'
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+}
+
+project('plugin') {
+    apply plugin: 'java'
+    apply plugin: 'application'
+    apply plugin: 'idea'
+    apply plugin: 'com.github.johnrengelman.shadow'
+    apply plugin: 'signing'
+    apply plugin: 'maven-publish'
+
+    sourceCompatibility = JavaVersion.VERSION_1_8
+
+    dependencies {
+        implementation 'com.google.protobuf:protobuf-java:3.6.1'
+        implementation 'com.google.protobuf:protobuf-java-util:3.6.1'
+        implementation 'com.google.api.grpc:proto-google-common-protos:1.17.0'
+        implementation 'com.github.jknack:handlebars:4.1.2'
+        implementation 'org.apache.commons:commons-lang3:3.9'
+        implementation 'com.google.googlejavaformat:google-java-format:1.7'
+        implementation 'org.apache.logging.log4j:log4j-api:2.12.1'
+        implementation 'org.apache.logging.log4j:log4j-core:2.12.1'
+        implementation 'org.apache.logging.log4j:log4j-slf4j-impl:2.12.1'
+
+        testRuntime 'org.junit.platform:junit-platform-launcher:1.4.2'
+        testRuntime 'org.junit.jupiter:junit-jupiter-engine:5.4.2'
+        testRuntime 'org.junit.vintage:junit-vintage-engine:5.4.2'
+    }
+
+    // Define the main class for the application
+    mainClassName = 'io.github.protobufx.protoc.gen.spring.Main'
+
+    jar {
+        manifest {
+            attributes "Main-Class" : "io.github.protobufx.protoc.gen.spring.Main"
+            attributes 'Multi-Release': 'true'
+        }
+    }
+
+    shadowJar {
+        archiveBaseName = 'protoc-gen-java'
+        classifier = null
+    }
+
+    task sourceJar(type: Jar) {
+        archiveBaseName = 'protoc-gen-java'
+        from sourceSets.main.allSource
+        archiveClassifier = 'sources'
+    }
+
+    task javadocJar(type: Jar, dependsOn: javadoc) {
+        archiveBaseName = 'protoc-gen-java'
+        archiveClassifier = 'javadoc'
+        from javadoc.destinationDir
+    }
+
+    task linuxExe(type: Jar) {
+        archiveBaseName = 'protoc-gen-java'
+        archiveClassifier = 'linux-x86_64'
+        archiveExtension = 'exe'
+        dependsOn(shadowJar)
+        doLast {
+            File file = linuxExe.archivePath
+            file.delete()
+            file.createNewFile()
+            file.executable = true
+            file << "#!/bin/bash\nexec java -jar \$0\n"
+            file << shadowJar.archivePath.bytes
+        }
+    }
+
+    task osxX86Exe(type: Jar) {
+        archiveBaseName = 'protoc-gen-java'
+        archiveClassifier = 'osx-x86_64'
+        archiveExtension = 'exe'
+        dependsOn(shadowJar)
+        doLast {
+            File file = osxX86Exe.archivePath
+            file.delete()
+            file.createNewFile()
+            file.executable = true
+            file << "#!/bin/bash\nexec java -jar \$0\n"
+            file << shadowJar.archivePath.bytes
+        }
+    }
+
+    task osxAarchExe(type: Jar) {
+        archiveBaseName = 'protoc-gen-java'
+        archiveClassifier = 'osx-aarch_64'
+        archiveExtension = 'exe'
+        dependsOn(shadowJar)
+        doLast {
+            File file = osxAarchExe.archivePath
+            file.delete()
+            file.createNewFile()
+            file.executable = true
+            file << "#!/bin/bash\nexec java -jar \$0\n"
+            file << shadowJar.archivePath.bytes
+        }
+    }
+
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                artifactId 'protoc-gen-java'
+                artifact shadowJar
+                artifact sourceJar
+                artifact javadocJar
+                artifact linuxExe
+                artifact osxX86Exe
+                artifact osxAarchExe
+                pom {
+                    name = 'protoc-gen-java'
+                    description = 'gRPC to JSON handler generator protoc plugin'
+                    url = 'https://github.com/protobuf-x/protoc-gen-java'
+                    licenses {
+                        license {
+                            name = 'MIT'
+                            url = 'https://opensource.org/licenses/MIT'
+                        }
+                    }
+                    developers {
+                        developer {
+                            id = 'disc99'
+                            name = 'Daisuke Kanehira'
+                            email = 'disc99.g+sonatype@gmail.com'
+                        }
+                    }
+                    scm {
+                        connection = 'git@github.com:protobuf-x/protoc-gen-java.git'
+                        developerConnection = 'git@github.com:protobuf-x/protoc-gen-java.git'
+                        url = 'https://github.com/protobuf-x/protoc-gen-java'
+                    }
+                }
+            }
+        }
+//        repositories {
+//            maven {
+//                def releasesRepoUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+//                def snapshotsRepoUrl = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+//                url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+//                credentials {
+//                    username = "${sonatypeUsername}"
+//                    password = "${sonatypePassword}"
+//                }
+//            }
+//        }
+    }
+
+//    signing {
+//        sign publishing.publications.mavenJava
+//    }
+}
+
+project('example') {
+    apply plugin: 'java'
+    apply plugin: "org.springframework.boot"
+    apply plugin: "io.spring.dependency-management"
+    apply plugin: 'com.google.protobuf'
+
+    dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter-actuator'
+        implementation 'org.springframework.boot:spring-boot-starter-webflux'
+        implementation 'org.springframework.boot:spring-boot-starter-json'
+        implementation 'io.github.lognet:grpc-spring-boot-starter:3.1.0'
+        implementation "io.grpc:grpc-netty:1.23.0"
+        implementation "io.grpc:grpc-protobuf:1.23.0"
+        implementation "io.grpc:grpc-stub:1.23.0"
+
+        compileOnly 'org.projectlombok:lombok'
+        annotationProcessor 'org.projectlombok:lombok'
+
+        testImplementation('org.springframework.boot:spring-boot-starter-test') {
+            exclude module: 'junit'
+            exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+        }
+        testImplementation 'org.junit.jupiter:junit-jupiter-api'
+        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+    }
+
+
+    protobuf {
+        def versionSuffix = (System.properties.containsKey("os.name")
+                && System.properties.get("os.name") == "Mac OS X"
+                && System.properties.containsKey("os.arch")
+                && System.properties.get("os.arch") == "aarch64") ? ":osx-x86_64" : ""
+        protoc {
+            artifact = "com.google.protobuf:protoc:3.8.0${versionSuffix}"
+        }
+        plugins {
+            grpc {
+                artifact = "io.grpc:protoc-gen-grpc-java:1.21.0${versionSuffix}"
+            }
+            webflux {
+                artifact = 'io.github.protobuf-x:protoc-gen-java:local-SNAPSHOT'
+            }
+        }
+        generateProtoTasks {
+            all()*.plugins {
+                grpc {}
+                webflux {}
+            }
+        }
+    }
+
+    sourceSets {
+        main {
+            java {
+                srcDirs 'build/generated/source/proto/main/grpc'
+                srcDirs 'build/generated/source/proto/main/java'
+                srcDirs 'build/generated/source/proto/main/webflux'
+            }
+        }
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+}
+

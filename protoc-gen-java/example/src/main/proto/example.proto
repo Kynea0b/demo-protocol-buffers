@@ -1,0 +1,280 @@
+syntax = "proto3";
+
+package example.demo;
+option java_multiple_files = true;
+option java_package = "com.example.demo";
+
+import "google/api/annotations.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/duration.proto";
+//import "google/protobuf/wrappers.proto";
+//import "google/protobuf/empty.proto";
+//import "google/protobuf/struct.proto";
+
+
+message Echo {
+    int64 id = 1;
+    string content = 2;
+}
+
+message GetEchoRequest {
+    int64 id = 1;
+}
+
+message GetEchoByContentRequest {
+    string content = 1;
+}
+
+message GetEchoResponse {
+    Echo echo = 1;
+}
+
+message DeleteEchoRequest {
+    int64 id = 1;
+}
+
+message DeleteEchoResponse {
+    Echo echo = 1;
+}
+
+message SingleGetEchoRequest {
+    string id = 1;
+}
+
+message SingleGetEchoResponse {
+    Echo echo = 1;
+}
+
+message EnumGetEchoRequest {
+    string id = 1;
+    Type type = 2;
+    repeated Type types = 3;
+    enum Type {
+        TYPE_A = 0;
+        TYPE_B = 1;
+    }
+}
+
+message EnumGetEchoResponse {
+    Echo echo = 1;
+}
+
+message MultiGetEchoRequest {
+    repeated int64 id = 1;
+}
+
+message MultiGetEchoResponse {
+    repeated Echo echo = 1;
+}
+
+message CreateEchoRequest {
+    Echo echo = 1;
+}
+
+message CreateEchoResponse {
+    Echo echo = 1;
+}
+
+message NewEchoRequest {
+    int32 id = 1;
+    string content = 2;
+    Echo echo = 3;
+}
+
+message NewEchoResponse {
+    Echo echo = 1;
+}
+
+message UpdateEchoRequest {
+    int64 id = 1;
+    Echo new_echo = 2;
+}
+
+message UpdateEchoResponse {
+    Echo echo = 1;
+}
+
+message ErrorEchoRequest {
+    int64 id = 1;
+}
+
+message ErrorEchoResponse {
+    Echo echo = 1;
+}
+
+message EmptyRequest {}
+message EmptyResponse {}
+
+message TypesRequest {
+    google.protobuf.FieldMask mask = 1;
+    google.protobuf.Timestamp time = 2;
+    google.protobuf.Duration range = 3;
+//    google.protobuf.StringValue string = 4;
+//    google.protobuf.BytesValue bytes = 5;
+//    google.protobuf.Int32Value int32 = 6;
+//    google.protobuf.UInt32Value uint32 = 7;
+//    google.protobuf.Int64Value in64 = 8;
+//    google.protobuf.UInt64Value uint64 = 9;
+//    google.protobuf.FloatValue float = 10;
+//    google.protobuf.DoubleValue double = 11;
+//    google.protobuf.BoolValue bool = 12;
+//    google.protobuf.Empty empty = 13;
+//    google.protobuf.Struct struct = 14;
+//    google.protobuf.Value value = 15;
+//    google.protobuf.ListValue list = 16;
+//    google.protobuf.NullValue null = 17;
+}
+
+message TypesResponse {
+    string json = 1;
+}
+
+message CustomRequest {
+    Echo echo = 1;
+}
+
+message CustomResponse {
+    Echo echo = 1;
+}
+
+message Custom2Request {
+    string name = 1;
+    int32 age = 2;
+}
+
+message Custom2Response {
+    string json = 1;
+}
+
+message Custom3Request {
+    string name1 = 1;
+    string name2 = 2;
+    int32 age = 3;
+}
+
+message Custom3Response {
+    string json = 1;
+}
+
+service EchoService {
+    // single line comment.
+    // new line.
+    rpc GetEcho(GetEchoRequest) returns (GetEchoResponse) {
+        option (google.api.http) = {
+            get: "/echo/{id}"
+        };
+    }
+
+    /*
+     * multiple line comment
+     * new line.
+     * next text.
+     * last text.
+     */
+    rpc GetEchoByContent(GetEchoByContentRequest) returns (GetEchoResponse) {
+        option (google.api.http) = {
+            get: "/echo/contents/{content}"
+        };
+    }
+
+    rpc SingleGetEcho(SingleGetEchoRequest) returns (SingleGetEchoResponse) {
+        option (google.api.http) = {
+            get: "/echo_single"
+        };
+    }
+
+    rpc EnumGetEcho(EnumGetEchoRequest) returns (EnumGetEchoResponse) {
+        option (google.api.http) = {
+            get: "/echo_enum"
+        };
+    }
+
+    rpc MultiGetEcho(MultiGetEchoRequest) returns (MultiGetEchoResponse) {
+        option (google.api.http) = {
+            // The echo strings should get converted to parameters.
+            get: "/echo"
+        };
+    }
+
+    rpc DeleteEcho(DeleteEchoRequest) returns (DeleteEchoResponse) {
+        option (google.api.http) = {
+            delete: "/echo/{id}"
+        };
+    }
+
+    rpc GetEchoHeader(GetEchoRequest) returns (GetEchoResponse) {
+        option (google.api.http) = {
+            get: "/echoHeader"
+        };
+    }
+
+    rpc NewEcho(NewEchoRequest) returns (NewEchoResponse) {
+        option (google.api.http) = {
+            post: "/echo"
+            body: "*"
+            additional_bindings {
+                post: "/echo/{echo.id}"
+                body: "echo"
+            }
+        };
+    }
+
+    rpc UpdateEcho(UpdateEchoRequest) returns (UpdateEchoResponse) {
+        option (google.api.http) = {
+            put: "/echo"
+            body: "new_echo"
+            additional_bindings {
+                patch: "/echo/{id}"
+                body: "new_echo"
+            }
+        };
+    }
+
+    rpc ErrorEcho(ErrorEchoRequest) returns (ErrorEchoResponse) {
+        option (google.api.http) = {
+            get: "/echo/error/{id}"
+        };
+    }
+
+    rpc EmptyEcho(EmptyRequest) returns (EmptyResponse) {
+        option (google.api.http) = {
+            post: "/echoEmpty"
+            body: "*"
+        };
+    }
+
+    rpc TypesEcho(TypesRequest) returns (TypesResponse) {
+        option (google.api.http) = {
+            get: "/echoTypes"
+        };
+    }
+
+    rpc CustomEcho(CustomRequest) returns (CustomResponse) {
+        option (google.api.http) = {
+            post: "/echo:custom"
+            body: "*"
+        };
+    }
+
+    rpc CustomEcho2(Custom2Request) returns (Custom2Response) {
+        option (google.api.http) = {
+            post: "/echo/{name}:custom"
+            body: "*"
+        };
+    }
+
+    rpc CustomEcho3(Custom3Request) returns (Custom3Response) {
+        option (google.api.http) = {
+            post: "/echo/{name1}/child/{name2}:custom"
+            body: "*"
+        };
+    }
+
+    rpc GetEchoRpc(GetEchoRequest) returns (GetEchoResponse) {
+        option (google.api.http) = {
+            post: "/example.demo.EchoService/GetEchoRpc"
+            body: "*"
+        };
+    }
+}

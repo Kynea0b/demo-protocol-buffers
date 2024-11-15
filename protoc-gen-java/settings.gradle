@@ -1,0 +1,3 @@
+rootProject.name = 'protoc-gen-java'
+include 'plugin'
+include 'example'

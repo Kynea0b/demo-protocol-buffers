@@ -29,4 +29,6 @@ get_lendinginfo:
 
 get_borrowedtime:
 	curl -X GET http://localhost:8090/v1/info/account/"Tanaka"
-	
+
+hello:
+	curl -X GET http://localhost:8090/hello/"foobarbaz"

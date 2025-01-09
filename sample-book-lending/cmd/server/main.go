@@ -148,6 +148,10 @@ func main() {
 
 	gwmux := runtime.NewServeMux()
 
+	err = gwmux.HandlePath("GET", "/hello/{name}", func(w http.ResponseWriter, r *http.Request, pathParams map[string]string) {
+		w.Write([]byte("hello " + pathParams["name"]))
+	})
+
 	err = hellopb.RegisterLendingBooksServiceHandler(context.Background(), gwmux, conn)
 	if err != nil {
 		log.Fatalln("Failed to register gateway:", err)

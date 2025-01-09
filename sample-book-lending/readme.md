@@ -52,6 +52,12 @@ demo-protocol-buffers/sample-book-lending
 % make sendborrow2
 ```
 
+## ブラウザ
+
+コマンドラインからリクエスト送信する場合は、`curl`
+下記のようにブラウザからhttpリクエストを送っても良き。
+http://localhost:8090/hello/%22foobarbaz%22
+
 ## Protocol Documentation
 
 [Protocol Documentation](https://kynea0b.github.io/demo-protocol-buffers/sample-book-lending/doc/index.html)

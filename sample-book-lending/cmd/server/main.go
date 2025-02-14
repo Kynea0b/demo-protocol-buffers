@@ -36,6 +36,11 @@ import (
 // key: "貸与者の名前", val: "貸し出し日"
 var dbBook = mydb.NewGoLevelDB("path/to/bookdb")
 
+// TODO
+//// key: "name", val: "id"
+////　db package関数整理しないと。本だけになっている。
+//var dbAccount = mydb.NewGoLevelDB("path/to/accountsdb")
+
 func init() {
 
 }
@@ -103,6 +108,22 @@ func (s *myServer) GetBorrowedTime(ctx context.Context, req *hellopb.Account) (*
 	return &hellopb.BorrrowResponse{
 		Account:   &hellopb.Account{Name: req.Name},
 		Timestamp: t,
+	}, nil
+}
+
+//	{
+//	 "body": {
+//	   "name": "Hoge",
+//	   "mail": "hogehoge@gmail.com"
+//	 },
+//	 // ... other fields
+//	}
+func (s *myServer) RegisterAccount(ctx context.Context, req *hellopb.AccountRequest) (*hellopb.AccountResponse, error) {
+	fmt.Printf("Hello!! My Hobby is %s", req.Hobby)
+	fmt.Printf("Hello!! My Hobby is %s", req.Body)
+
+	return &hellopb.AccountResponse{
+		AccountId: "123456789",
 	}, nil
 }
 

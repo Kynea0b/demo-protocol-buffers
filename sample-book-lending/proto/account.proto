@@ -17,6 +17,19 @@ message Account {
   string name = 1;
 }
 
+message AccountRequest {
+  message Body {
+    string name = 1;
+    string mail = 2;
+  }
+  Body body = 1;
+  string hobby = 2;
+}
+
+message AccountResponse {
+  string account_id = 1;
+}
+
 // 図書館のアカウント
 message Accounts {
   // 借りる人の名前
@@ -65,6 +78,14 @@ message RegisterBookResponse {
 
 // 本の貸し出しサービス
 service LendingBooksService {
+  // アカウント登録
+  rpc RegisterAccount (AccountRequest) returns (AccountResponse) {
+    option (google.api.http) = {
+      post: "/v1/register/{hobby}"
+      body: "body"
+    };
+  }
+
   // 本を借りるためのメソッド
   rpc SendBorrow (BorrowRequest) returns (BorrrowResponse);
   

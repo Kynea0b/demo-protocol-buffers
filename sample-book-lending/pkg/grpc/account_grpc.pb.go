@@ -21,11 +21,12 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	LendingBooksService_RegisterAccount_FullMethodName = "/myapp.LendingBooksService/RegisterAccount"
-	LendingBooksService_SendBorrow_FullMethodName      = "/myapp.LendingBooksService/SendBorrow"
-	LendingBooksService_RegisterBook_FullMethodName    = "/myapp.LendingBooksService/RegisterBook"
-	LendingBooksService_GetLendingInfo_FullMethodName  = "/myapp.LendingBooksService/GetLendingInfo"
-	LendingBooksService_GetBorrowedTime_FullMethodName = "/myapp.LendingBooksService/GetBorrowedTime"
+	LendingBooksService_RegisterAccount_FullMethodName  = "/myapp.LendingBooksService/RegisterAccount"
+	LendingBooksService_RegisterAccount2_FullMethodName = "/myapp.LendingBooksService/RegisterAccount2"
+	LendingBooksService_SendBorrow_FullMethodName       = "/myapp.LendingBooksService/SendBorrow"
+	LendingBooksService_RegisterBook_FullMethodName     = "/myapp.LendingBooksService/RegisterBook"
+	LendingBooksService_GetLendingInfo_FullMethodName   = "/myapp.LendingBooksService/GetLendingInfo"
+	LendingBooksService_GetBorrowedTime_FullMethodName  = "/myapp.LendingBooksService/GetBorrowedTime"
 )
 
 // LendingBooksServiceClient is the client API for LendingBooksService service.
@@ -36,6 +37,8 @@ const (
 type LendingBooksServiceClient interface {
 	// アカウント登録
 	RegisterAccount(ctx context.Context, in *AccountRequest, opts ...grpc.CallOption) (*AccountResponse, error)
+	// アカウント登録
+	RegisterAccount2(ctx context.Context, in *AccountRequest2, opts ...grpc.CallOption) (*AccountResponse2, error)
 	// 本を借りるためのメソッド
 	SendBorrow(ctx context.Context, in *BorrowRequest, opts ...grpc.CallOption) (*BorrrowResponse, error)
 	// 新しい本を登録
@@ -58,6 +61,16 @@ func (c *lendingBooksServiceClient) RegisterAccount(ctx context.Context, in *Acc
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(AccountResponse)
 	err := c.cc.Invoke(ctx, LendingBooksService_RegisterAccount_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *lendingBooksServiceClient) RegisterAccount2(ctx context.Context, in *AccountRequest2, opts ...grpc.CallOption) (*AccountResponse2, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(AccountResponse2)
+	err := c.cc.Invoke(ctx, LendingBooksService_RegisterAccount2_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -112,6 +125,8 @@ func (c *lendingBooksServiceClient) GetBorrowedTime(ctx context.Context, in *Acc
 type LendingBooksServiceServer interface {
 	// アカウント登録
 	RegisterAccount(context.Context, *AccountRequest) (*AccountResponse, error)
+	// アカウント登録
+	RegisterAccount2(context.Context, *AccountRequest2) (*AccountResponse2, error)
 	// 本を借りるためのメソッド
 	SendBorrow(context.Context, *BorrowRequest) (*BorrrowResponse, error)
 	// 新しい本を登録
@@ -132,6 +147,9 @@ type UnimplementedLendingBooksServiceServer struct{}
 
 func (UnimplementedLendingBooksServiceServer) RegisterAccount(context.Context, *AccountRequest) (*AccountResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RegisterAccount not implemented")
+}
+func (UnimplementedLendingBooksServiceServer) RegisterAccount2(context.Context, *AccountRequest2) (*AccountResponse2, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RegisterAccount2 not implemented")
 }
 func (UnimplementedLendingBooksServiceServer) SendBorrow(context.Context, *BorrowRequest) (*BorrrowResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SendBorrow not implemented")
@@ -180,6 +198,24 @@ func _LendingBooksService_RegisterAccount_Handler(srv interface{}, ctx context.C
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(LendingBooksServiceServer).RegisterAccount(ctx, req.(*AccountRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LendingBooksService_RegisterAccount2_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AccountRequest2)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LendingBooksServiceServer).RegisterAccount2(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LendingBooksService_RegisterAccount2_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LendingBooksServiceServer).RegisterAccount2(ctx, req.(*AccountRequest2))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -266,6 +302,10 @@ var LendingBooksService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "RegisterAccount",
 			Handler:    _LendingBooksService_RegisterAccount_Handler,
+		},
+		{
+			MethodName: "RegisterAccount2",
+			Handler:    _LendingBooksService_RegisterAccount2_Handler,
 		},
 		{
 			MethodName: "SendBorrow",

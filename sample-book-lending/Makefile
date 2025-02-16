@@ -16,25 +16,30 @@ start_server:
 	cd cmd/server && go run main.go
 
 register_book:
-	curl -X POST -k http://localhost:8090/v1/info/book -d '{"num": 3, "title": "七つの海のティコ"}'
+	curl -X POST -k http://localhost:32473/v1/info/book -d '{"num": 3, "title": "七つの海のティコ"}'
 
 
 # todo use body
 register_account:
-	curl -X POST -k http://localhost:8090/v1/register/"swimming" -d '{"name": "nyannnn", "mail": "hogehogehoge@gmail.com"}'
+	curl -X POST -k http://localhost:32473/v1/register/"swimming" -d '{"name": "nyannnn", "mail": "hogehogehoge@gmail.com"}'
+
+
+# パス中の`foosan`が優先されるみたい。jsonの値はリクエストには入らない？
+register_account2:
+	curl -X POST -k http://localhost:32473/v1/register/"foosan" -d '{"name": "nyannnn", "mail": "hogehogehoge@gmail.com"}'
 
 
 sendborrow1:
-	grpcurl -plaintext -d '{"account":{ "name": "Tanaka"},"book":{ "title": "赤毛のアン"}}' localhost:8080 myapp.LendingBooksService.SendBorrow
+	grpcurl -plaintext -d '{"account":{ "name": "Tanaka"},"book":{ "title": "赤毛のアン"}}' localhost:32473 myapp.LendingBooksService.SendBorrow
 
 sendborrow2:
-	grpcurl -plaintext -d '{"account":{ "name": "Tanaka"},"book":{ "title": "七つの海のティコ"}}' localhost:8080 myapp.LendingBooksService.SendBorrow
+	grpcurl -plaintext -d '{"account":{ "name": "Tanaka"},"book":{ "title": "七つの海のティコ"}}' localhost:32473 myapp.LendingBooksService.SendBorrow
 
 get_lendinginfo:
-	curl -X GET http://localhost:8090/v1/info/book/"七つの海のティコ"
+	curl -X GET http://localhost:32473/v1/info/book/"七つの海のティコ"
 
 get_borrowedtime:
-	curl -X GET http://localhost:8090/v1/info/account/"Tanaka"
+	curl -X GET http://localhost:32473/v1/info/account/"Tanaka"
 
 hello:
-	curl -X GET http://localhost:8090/hello/"foobarbaz"
+	curl -X GET http://localhost:32473/hello/"foobarbaz"

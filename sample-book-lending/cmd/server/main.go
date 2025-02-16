@@ -127,6 +127,15 @@ func (s *myServer) RegisterAccount(ctx context.Context, req *hellopb.AccountRequ
 	}, nil
 }
 
+func (s *myServer) RegisterAccount2(ctx context.Context, req *hellopb.AccountRequest2) (*hellopb.AccountResponse2, error) {
+	fmt.Printf("Hello2!! My name is %s", req.Name)
+	fmt.Printf("Hello2!! My mail is %s", req.Mail)
+
+	return &hellopb.AccountResponse2{
+		AccountId: "123456789",
+	}, nil
+}
+
 // NewMyServer 自作サービス構造体のコンストラクタを定義
 func NewMyServer() *myServer {
 	return &myServer{}
@@ -145,7 +154,8 @@ func main() {
 	dbBook.RegisterBooks(books)
 
 	// 1. 8080番portのLisnterを作成
-	port := 8080
+	//port := 8080
+	port := 26355
 	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
 	if err != nil {
 		panic(err)
@@ -162,8 +172,10 @@ func main() {
 	// x_1. for proxy
 	// Create a client connection to the gRPC server we just started
 	// This is where the gRPC-Gateway proxies the requests
+	proxyPort := ":26355"
+	target := fmt.Sprintf("0.0.0.0%s", proxyPort)
 	conn, err := grpc.NewClient(
-		"0.0.0.0:8080",
+		target,
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 	)
 
@@ -178,8 +190,10 @@ func main() {
 		log.Fatalln("Failed to register gateway:", err)
 	}
 
+	portGateway := ":32473"
+
 	gwServer := &http.Server{
-		Addr:    ":8090",
+		Addr:    portGateway,
 		Handler: gwmux,
 	}
 
@@ -193,7 +207,7 @@ func main() {
 	}()
 
 	// x_2. for proxy
-	log.Println("Serving gRPC-Gateway on http://0.0.0.0:8090")
+	log.Printf("Serving gRPC-Gateway on http://0.0.0.0%s", portGateway)
 	log.Fatalln(gwServer.ListenAndServe())
 
 	// 6.Ctrl+Cが入力されたらGraceful shutdownされるようにする

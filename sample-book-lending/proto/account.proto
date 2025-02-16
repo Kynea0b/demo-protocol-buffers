@@ -17,6 +17,8 @@ message Account {
   string name = 1;
 }
 
+
+// Account
 message AccountRequest {
   message Body {
     string name = 1;
@@ -27,6 +29,16 @@ message AccountRequest {
 }
 
 message AccountResponse {
+  string account_id = 1;
+}
+
+// Account2
+message AccountRequest2 {
+  string name = 1;
+  string mail = 2;
+}
+
+message AccountResponse2 {
   string account_id = 1;
 }
 
@@ -83,6 +95,23 @@ service LendingBooksService {
     option (google.api.http) = {
       post: "/v1/register/{hobby}"
       body: "body"
+    };
+  }
+
+  // 重複は非推奨
+  // アカウント登録　passの{name}が優先される
+  rpc RegisterAccount2 (AccountRequest2) returns (AccountResponse2) {
+    option (google.api.http) = {
+      post: "/v1/register/{name}"
+      body: "*"
+    };
+  }
+
+  // 重複は非推奨
+  rpc RegisterAccount3(AccountRequest) returns (AccountResponse) {
+    option (google.api.http) = {
+      put: "/v1/register/{account_id}" // account_id は URL に含まれる
+      body: "name" // name フィールドをリクエストボディから取得
     };
   }
 

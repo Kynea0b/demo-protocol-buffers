@@ -22,6 +22,10 @@ register_book:
 suspend:
 	curl -X PATCH -H "Content-Type: application/json" -d '{"status": "SUSPENDED"}' http://localhost:8090/v1/accounts/123
 
+activate:
+	curl -X PATCH -H "Content-Type: application/json" -d '{"status": "ACTIVE"}' http://localhost:8090/v1/accounts/123
+
+
 # todo use body
 register_account:
 	curl -X POST -k http://localhost:8090/v1/register/"swimming" -d '{"name": "nyannnn", "mail": "hogehogehoge@gmail.com"}'

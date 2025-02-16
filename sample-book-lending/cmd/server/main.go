@@ -127,6 +127,24 @@ func (s *myServer) RegisterAccount(ctx context.Context, req *hellopb.AccountRequ
 	}, nil
 }
 
+func (s *myServer) UpdateAccountStatus(ctx context.Context, req *hellopb.UpdateAccountStatusRequest) (*hellopb.UpdateAccountStatusResponse, error) {
+	accountID := req.GetAccountId()
+	status := req.GetStatus()
+
+	switch status {
+	case myutil.SUSPENDED:
+		// アカウント一時停止処理
+		fmt.Printf("Suspending account %d\n", accountID)
+		return &hellopb.UpdateAccountStatusResponse{Message: "Account suspended"}, nil
+	case myutil.ACTIVE:
+		// アカウントアクティブ化処理
+		fmt.Printf("Activating account %d\n", accountID)
+		return &hellopb.UpdateAccountStatusResponse{Message: "Account activated"}, nil
+	default:
+		return nil, fmt.Errorf("invalid status: %s", status)
+	}
+}
+
 // NewMyServer 自作サービス構造体のコンストラクタを定義
 func NewMyServer() *myServer {
 	return &myServer{}

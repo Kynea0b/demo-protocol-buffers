@@ -19,6 +19,9 @@ register_book:
 	curl -X POST -k http://localhost:8090/v1/info/book -d '{"num": 3, "title": "七つの海のティコ"}'
 
 
+suspend:
+	curl -X PATCH -H "Content-Type: application/json" -d '{"status": "SUSPENDED"}' http://localhost:8090/v1/accounts/123
+
 # todo use body
 register_account:
 	curl -X POST -k http://localhost:8090/v1/register/"swimming" -d '{"name": "nyannnn", "mail": "hogehogehoge@gmail.com"}'

@@ -8,6 +8,12 @@ import (
 	"time"
 )
 
+const (
+	SUSPENDED = "SUSPENDED"
+	CLOSED    = "CLOSED"
+	ACTIVE    = "ACTIVE"
+)
+
 func EncodeUint(x uint64) ([]byte, int) {
 	buf := make([]byte, binary.MaxVarintLen64)
 

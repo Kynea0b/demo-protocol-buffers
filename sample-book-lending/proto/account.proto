@@ -30,6 +30,8 @@ message AccountResponse {
   string account_id = 1;
 }
 
+
+
 // 図書館のアカウント
 message Accounts {
   // 借りる人の名前
@@ -76,6 +78,17 @@ message RegisterBookResponse {
   string title = 2;
 }
 
+// deactivate
+message UpdateAccountStatusRequest {
+  int32 account_id = 1;
+  string status = 2; // "suspended" または "active"
+}
+
+message UpdateAccountStatusResponse {
+  string message = 1;
+}
+
+
 // 本の貸し出しサービス
 service LendingBooksService {
   // アカウント登録
@@ -85,6 +98,14 @@ service LendingBooksService {
       body: "body"
     };
   }
+
+  rpc UpdateAccountStatus (UpdateAccountStatusRequest) returns (UpdateAccountStatusResponse) {
+    option (google.api.http) = {
+      patch: "/v1/accounts/{account_id}"
+      body: "*" // リクエストボディ全体を使用
+    };
+  }
+
 
   // 本を借りるためのメソッド
   rpc SendBorrow (BorrowRequest) returns (BorrrowResponse);

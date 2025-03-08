@@ -15,26 +15,34 @@ gen_swagger:
 start_server:
 	cd cmd/server && go run main.go
 
-register_book:
-	curl -X POST -k http://localhost:8090/v1/info/book -d '{"num": 3, "title": "七つの海のティコ"}'
+borrow_book:
+	grpcurl -plaintext -d '{"account":{ "name": "Tanaka"},"book":{ "title": "赤毛のアン"}}' localhost:50051 myapp.LendingBooksService.SendBorrow
 
 
-# todo use body
-register_account:
-	curl -X POST -k http://localhost:8090/v1/register/"swimming" -d '{"name": "nyannnn", "mail": "hogehogehoge@gmail.com"}'
+#register_book:
+#	curl -X POST -k http://localhost:8090/v1/info/book -d '{"num": 3, "title": "七つの海のティコ"}'
+#
+#
+## todo use body
+#register_account:
+#	curl -X POST -k http://localhost:8090/v1/register/"swimming" -d '{"name": "nyannnn", "mail": "hogehogehoge@gmail.com"}'
 
 
-sendborrow1:
-	grpcurl -plaintext -d '{"account":{ "name": "Tanaka"},"book":{ "title": "赤毛のアン"}}' localhost:8080 myapp.LendingBooksService.SendBorrow
+#sendborrow1:
+#	grpcurl -plaintext -d '{"account":{ "name": "Tanaka"},"book":{ "title": "赤毛のアン"}}' localhost:8080 myapp.LendingBooksService.SendBorrow
+#
+#sendborrow2:
+#	grpcurl -plaintext -d '{"account":{ "name": "Tanaka"},"book":{ "title": "七つの海のティコ"}}' localhost:8080 myapp.LendingBooksService.SendBorrow
+#
+#get_lendinginfo:
+#	curl -X GET http://localhost:8090/v1/info/book/"七つの海のティコ"
+#
+#get_borrowedtime:
+#	curl -X GET http://localhost:8090/v1/info/account/"Tanaka"
+#
+#hello:
+#	curl -X GET http://localhost:8090/hello/"foobarbaz"
 
-sendborrow2:
-	grpcurl -plaintext -d '{"account":{ "name": "Tanaka"},"book":{ "title": "七つの海のティコ"}}' localhost:8080 myapp.LendingBooksService.SendBorrow
+fmt:
+	go fmt ./...
 
-get_lendinginfo:
-	curl -X GET http://localhost:8090/v1/info/book/"七つの海のティコ"
-
-get_borrowedtime:
-	curl -X GET http://localhost:8090/v1/info/account/"Tanaka"
-
-hello:
-	curl -X GET http://localhost:8090/hello/"foobarbaz"

@@ -19,7 +19,7 @@ func main() {
 	// リフレクションAPIの登録 (追加)
 	reflection.Register(grpcServer)
 	// サービスの登録
-	pb.RegisterLendingBooksServiceServer(grpcServer, app.NewServer())
+	pb.RegisterLibraryServiceServer(grpcServer, app.NewServer())
 	lis, err := net.Listen("tcp", ":50051")
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
@@ -33,7 +33,7 @@ func main() {
 	// gRPC Gatewayの起動
 	mux := app.NewGatewayMux()
 	opts := []grpc.DialOption{grpc.WithInsecure()}
-	if err := pb.RegisterLendingBooksServiceHandlerFromEndpoint(app.GetContext(), mux, "localhost:50051", opts); err != nil {
+	if err := pb.RegisterLibraryServiceHandlerFromEndpoint(app.GetContext(), mux, "localhost:50051", opts); err != nil {
 		log.Fatalf("failed to register gateway: %v", err)
 	}
 

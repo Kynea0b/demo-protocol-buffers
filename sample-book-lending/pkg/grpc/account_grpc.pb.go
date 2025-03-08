@@ -4,8 +4,6 @@
 // - protoc             v3.20.3
 // source: account.proto
 
-// packageの宣言
-
 package grpc
 
 import (
@@ -21,267 +19,177 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	LendingBooksService_RegisterAccount_FullMethodName = "/myapp.LendingBooksService/RegisterAccount"
-	LendingBooksService_SendBorrow_FullMethodName      = "/myapp.LendingBooksService/SendBorrow"
-	LendingBooksService_RegisterBook_FullMethodName    = "/myapp.LendingBooksService/RegisterBook"
-	LendingBooksService_GetLendingInfo_FullMethodName  = "/myapp.LendingBooksService/GetLendingInfo"
-	LendingBooksService_GetBorrowedTime_FullMethodName = "/myapp.LendingBooksService/GetBorrowedTime"
+	AccountService_RegisterUser_FullMethodName = "/account.AccountService/RegisterUser"
+	AccountService_LoginUser_FullMethodName    = "/account.AccountService/LoginUser"
+	AccountService_GetUserInfo_FullMethodName  = "/account.AccountService/GetUserInfo"
 )
 
-// LendingBooksServiceClient is the client API for LendingBooksService service.
+// AccountServiceClient is the client API for AccountService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-//
-// 本の貸し出しサービス
-type LendingBooksServiceClient interface {
-	// アカウント登録
-	RegisterAccount(ctx context.Context, in *AccountRequest, opts ...grpc.CallOption) (*AccountResponse, error)
-	// 本を借りるためのメソッド
-	SendBorrow(ctx context.Context, in *BorrowRequest, opts ...grpc.CallOption) (*BorrrowResponse, error)
-	// 新しい本を登録
-	RegisterBook(ctx context.Context, in *RegisterBookRequest, opts ...grpc.CallOption) (*RegisterBookResponse, error)
-	// 本の貸し出し情報を取得
-	GetLendingInfo(ctx context.Context, in *Book, opts ...grpc.CallOption) (*Accounts, error)
-	// アカウント本の貸し出し日を取得
-	GetBorrowedTime(ctx context.Context, in *Account, opts ...grpc.CallOption) (*BorrrowResponse, error)
+type AccountServiceClient interface {
+	RegisterUser(ctx context.Context, in *RegisterUserRequest, opts ...grpc.CallOption) (*RegisterUserResponse, error)
+	LoginUser(ctx context.Context, in *LoginUserRequest, opts ...grpc.CallOption) (*LoginUserResponse, error)
+	GetUserInfo(ctx context.Context, in *GetUserInfoRequest, opts ...grpc.CallOption) (*GetUserInfoResponse, error)
 }
 
-type lendingBooksServiceClient struct {
+type accountServiceClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewLendingBooksServiceClient(cc grpc.ClientConnInterface) LendingBooksServiceClient {
-	return &lendingBooksServiceClient{cc}
+func NewAccountServiceClient(cc grpc.ClientConnInterface) AccountServiceClient {
+	return &accountServiceClient{cc}
 }
 
-func (c *lendingBooksServiceClient) RegisterAccount(ctx context.Context, in *AccountRequest, opts ...grpc.CallOption) (*AccountResponse, error) {
+func (c *accountServiceClient) RegisterUser(ctx context.Context, in *RegisterUserRequest, opts ...grpc.CallOption) (*RegisterUserResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(AccountResponse)
-	err := c.cc.Invoke(ctx, LendingBooksService_RegisterAccount_FullMethodName, in, out, cOpts...)
+	out := new(RegisterUserResponse)
+	err := c.cc.Invoke(ctx, AccountService_RegisterUser_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *lendingBooksServiceClient) SendBorrow(ctx context.Context, in *BorrowRequest, opts ...grpc.CallOption) (*BorrrowResponse, error) {
+func (c *accountServiceClient) LoginUser(ctx context.Context, in *LoginUserRequest, opts ...grpc.CallOption) (*LoginUserResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(BorrrowResponse)
-	err := c.cc.Invoke(ctx, LendingBooksService_SendBorrow_FullMethodName, in, out, cOpts...)
+	out := new(LoginUserResponse)
+	err := c.cc.Invoke(ctx, AccountService_LoginUser_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *lendingBooksServiceClient) RegisterBook(ctx context.Context, in *RegisterBookRequest, opts ...grpc.CallOption) (*RegisterBookResponse, error) {
+func (c *accountServiceClient) GetUserInfo(ctx context.Context, in *GetUserInfoRequest, opts ...grpc.CallOption) (*GetUserInfoResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(RegisterBookResponse)
-	err := c.cc.Invoke(ctx, LendingBooksService_RegisterBook_FullMethodName, in, out, cOpts...)
+	out := new(GetUserInfoResponse)
+	err := c.cc.Invoke(ctx, AccountService_GetUserInfo_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *lendingBooksServiceClient) GetLendingInfo(ctx context.Context, in *Book, opts ...grpc.CallOption) (*Accounts, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(Accounts)
-	err := c.cc.Invoke(ctx, LendingBooksService_GetLendingInfo_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *lendingBooksServiceClient) GetBorrowedTime(ctx context.Context, in *Account, opts ...grpc.CallOption) (*BorrrowResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(BorrrowResponse)
-	err := c.cc.Invoke(ctx, LendingBooksService_GetBorrowedTime_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-// LendingBooksServiceServer is the server API for LendingBooksService service.
-// All implementations must embed UnimplementedLendingBooksServiceServer
+// AccountServiceServer is the server API for AccountService service.
+// All implementations must embed UnimplementedAccountServiceServer
 // for forward compatibility.
-//
-// 本の貸し出しサービス
-type LendingBooksServiceServer interface {
-	// アカウント登録
-	RegisterAccount(context.Context, *AccountRequest) (*AccountResponse, error)
-	// 本を借りるためのメソッド
-	SendBorrow(context.Context, *BorrowRequest) (*BorrrowResponse, error)
-	// 新しい本を登録
-	RegisterBook(context.Context, *RegisterBookRequest) (*RegisterBookResponse, error)
-	// 本の貸し出し情報を取得
-	GetLendingInfo(context.Context, *Book) (*Accounts, error)
-	// アカウント本の貸し出し日を取得
-	GetBorrowedTime(context.Context, *Account) (*BorrrowResponse, error)
-	mustEmbedUnimplementedLendingBooksServiceServer()
+type AccountServiceServer interface {
+	RegisterUser(context.Context, *RegisterUserRequest) (*RegisterUserResponse, error)
+	LoginUser(context.Context, *LoginUserRequest) (*LoginUserResponse, error)
+	GetUserInfo(context.Context, *GetUserInfoRequest) (*GetUserInfoResponse, error)
+	mustEmbedUnimplementedAccountServiceServer()
 }
 
-// UnimplementedLendingBooksServiceServer must be embedded to have
+// UnimplementedAccountServiceServer must be embedded to have
 // forward compatible implementations.
 //
 // NOTE: this should be embedded by value instead of pointer to avoid a nil
 // pointer dereference when methods are called.
-type UnimplementedLendingBooksServiceServer struct{}
+type UnimplementedAccountServiceServer struct{}
 
-func (UnimplementedLendingBooksServiceServer) RegisterAccount(context.Context, *AccountRequest) (*AccountResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method RegisterAccount not implemented")
+func (UnimplementedAccountServiceServer) RegisterUser(context.Context, *RegisterUserRequest) (*RegisterUserResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RegisterUser not implemented")
 }
-func (UnimplementedLendingBooksServiceServer) SendBorrow(context.Context, *BorrowRequest) (*BorrrowResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SendBorrow not implemented")
+func (UnimplementedAccountServiceServer) LoginUser(context.Context, *LoginUserRequest) (*LoginUserResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method LoginUser not implemented")
 }
-func (UnimplementedLendingBooksServiceServer) RegisterBook(context.Context, *RegisterBookRequest) (*RegisterBookResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method RegisterBook not implemented")
+func (UnimplementedAccountServiceServer) GetUserInfo(context.Context, *GetUserInfoRequest) (*GetUserInfoResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUserInfo not implemented")
 }
-func (UnimplementedLendingBooksServiceServer) GetLendingInfo(context.Context, *Book) (*Accounts, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetLendingInfo not implemented")
-}
-func (UnimplementedLendingBooksServiceServer) GetBorrowedTime(context.Context, *Account) (*BorrrowResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetBorrowedTime not implemented")
-}
-func (UnimplementedLendingBooksServiceServer) mustEmbedUnimplementedLendingBooksServiceServer() {}
-func (UnimplementedLendingBooksServiceServer) testEmbeddedByValue()                             {}
+func (UnimplementedAccountServiceServer) mustEmbedUnimplementedAccountServiceServer() {}
+func (UnimplementedAccountServiceServer) testEmbeddedByValue()                        {}
 
-// UnsafeLendingBooksServiceServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to LendingBooksServiceServer will
+// UnsafeAccountServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to AccountServiceServer will
 // result in compilation errors.
-type UnsafeLendingBooksServiceServer interface {
-	mustEmbedUnimplementedLendingBooksServiceServer()
+type UnsafeAccountServiceServer interface {
+	mustEmbedUnimplementedAccountServiceServer()
 }
 
-func RegisterLendingBooksServiceServer(s grpc.ServiceRegistrar, srv LendingBooksServiceServer) {
-	// If the following call pancis, it indicates UnimplementedLendingBooksServiceServer was
+func RegisterAccountServiceServer(s grpc.ServiceRegistrar, srv AccountServiceServer) {
+	// If the following call pancis, it indicates UnimplementedAccountServiceServer was
 	// embedded by pointer and is nil.  This will cause panics if an
 	// unimplemented method is ever invoked, so we test this at initialization
 	// time to prevent it from happening at runtime later due to I/O.
 	if t, ok := srv.(interface{ testEmbeddedByValue() }); ok {
 		t.testEmbeddedByValue()
 	}
-	s.RegisterService(&LendingBooksService_ServiceDesc, srv)
+	s.RegisterService(&AccountService_ServiceDesc, srv)
 }
 
-func _LendingBooksService_RegisterAccount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AccountRequest)
+func _AccountService_RegisterUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RegisterUserRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(LendingBooksServiceServer).RegisterAccount(ctx, in)
+		return srv.(AccountServiceServer).RegisterUser(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: LendingBooksService_RegisterAccount_FullMethodName,
+		FullMethod: AccountService_RegisterUser_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LendingBooksServiceServer).RegisterAccount(ctx, req.(*AccountRequest))
+		return srv.(AccountServiceServer).RegisterUser(ctx, req.(*RegisterUserRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _LendingBooksService_SendBorrow_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(BorrowRequest)
+func _AccountService_LoginUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LoginUserRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(LendingBooksServiceServer).SendBorrow(ctx, in)
+		return srv.(AccountServiceServer).LoginUser(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: LendingBooksService_SendBorrow_FullMethodName,
+		FullMethod: AccountService_LoginUser_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LendingBooksServiceServer).SendBorrow(ctx, req.(*BorrowRequest))
+		return srv.(AccountServiceServer).LoginUser(ctx, req.(*LoginUserRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _LendingBooksService_RegisterBook_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(RegisterBookRequest)
+func _AccountService_GetUserInfo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetUserInfoRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(LendingBooksServiceServer).RegisterBook(ctx, in)
+		return srv.(AccountServiceServer).GetUserInfo(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: LendingBooksService_RegisterBook_FullMethodName,
+		FullMethod: AccountService_GetUserInfo_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LendingBooksServiceServer).RegisterBook(ctx, req.(*RegisterBookRequest))
+		return srv.(AccountServiceServer).GetUserInfo(ctx, req.(*GetUserInfoRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _LendingBooksService_GetLendingInfo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Book)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(LendingBooksServiceServer).GetLendingInfo(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: LendingBooksService_GetLendingInfo_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LendingBooksServiceServer).GetLendingInfo(ctx, req.(*Book))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _LendingBooksService_GetBorrowedTime_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Account)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(LendingBooksServiceServer).GetBorrowedTime(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: LendingBooksService_GetBorrowedTime_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LendingBooksServiceServer).GetBorrowedTime(ctx, req.(*Account))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-// LendingBooksService_ServiceDesc is the grpc.ServiceDesc for LendingBooksService service.
+// AccountService_ServiceDesc is the grpc.ServiceDesc for AccountService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var LendingBooksService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "myapp.LendingBooksService",
-	HandlerType: (*LendingBooksServiceServer)(nil),
+var AccountService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "account.AccountService",
+	HandlerType: (*AccountServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "RegisterAccount",
-			Handler:    _LendingBooksService_RegisterAccount_Handler,
+			MethodName: "RegisterUser",
+			Handler:    _AccountService_RegisterUser_Handler,
 		},
 		{
-			MethodName: "SendBorrow",
-			Handler:    _LendingBooksService_SendBorrow_Handler,
+			MethodName: "LoginUser",
+			Handler:    _AccountService_LoginUser_Handler,
 		},
 		{
-			MethodName: "RegisterBook",
-			Handler:    _LendingBooksService_RegisterBook_Handler,
-		},
-		{
-			MethodName: "GetLendingInfo",
-			Handler:    _LendingBooksService_GetLendingInfo_Handler,
-		},
-		{
-			MethodName: "GetBorrowedTime",
-			Handler:    _LendingBooksService_GetBorrowedTime_Handler,
+			MethodName: "GetUserInfo",
+			Handler:    _AccountService_GetUserInfo_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

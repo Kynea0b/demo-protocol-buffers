@@ -25,13 +25,13 @@ func (dbBook *GoLevelDB) Close() {
 }
 
 type Book struct {
-	Title string
-	Copy  int
+	Id   string
+	Copy int
 }
 
 // 本の追加
 func (dbBook *GoLevelDB) AddBook(book Book) error {
-	err := dbBook.Db.Put([]byte(book.Title), []byte(strconv.Itoa(book.Copy)), nil)
+	err := dbBook.Db.Put([]byte(book.Id), []byte(strconv.Itoa(book.Copy)), nil)
 	if err != nil {
 		return fmt.Errorf("failed to put book: %v", err)
 	}
@@ -53,7 +53,7 @@ func (dbBook *GoLevelDB) GetBook(title string) (*Book, error) {
 		return nil, fmt.Errorf("failed to convert copies to int: %v", err)
 	}
 
-	return &Book{Title: title, Copy: copies}, nil
+	return &Book{Id: title, Copy: copies}, nil
 }
 
 // 本の削除
@@ -71,18 +71,20 @@ func (dbBook *GoLevelDB) UpdateBook(book Book) error {
 }
 
 // 本の冊数を減らす
-func (dbBook *GoLevelDB) DecrementBookCopies(title string) error {
-	book, err := dbBook.GetBook(title)
+func (dbBook *GoLevelDB) DecrementBookCopies(id string) error {
+	fmt.Println("dbbbbbbbbbbbbbbbb")
+	book, err := dbBook.GetBook(id)
+	fmt.Println("bookkkkkkk", book)
 	if err != nil {
 		return err
 	}
 	if book == nil {
-		return fmt.Errorf("book '%s' not found", title)
+		return fmt.Errorf("book '%s' not found", id)
 	}
 
 	if book.Copy > 0 {
 		book.Copy--
 		return dbBook.UpdateBook(*book)
 	}
-	return fmt.Errorf("book '%s' is out of stock", title)
+	return fmt.Errorf("book '%s' is out of stock", id)
 }

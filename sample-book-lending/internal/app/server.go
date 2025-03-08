@@ -15,18 +15,20 @@ import (
 )
 
 type server struct {
-	pb.UnimplementedLendingBooksServiceServer
+	pb.UnimplementedLibraryServiceServer
 	libraryService *service.LibraryService
 }
 
 func NewServer() *server {
 	db := data.NewGoLevelDB("./books.db")
+	b := data.Book{Id: "123", Copy: 10}
+	db.AddBook(b)
 	return &server{
 		libraryService: service.NewLibraryService(db),
 	}
 }
 
-func (s *server) SendBorrow(ctx context.Context, req *pb.BorrowRequest) (*pb.BorrrowResponse, error) {
+func (s *server) BorrowBook(ctx context.Context, req *pb.BorrowBookRequest) (*pb.BorrowBookResponse, error) {
 	fmt.Println("debug: s.libraryService.BorrowBook(ctx, req) is called")
 	fmt.Println(req)
 	return s.libraryService.BorrowBook(ctx, req)

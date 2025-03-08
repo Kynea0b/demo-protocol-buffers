@@ -159,7 +159,7 @@ func _main() {
 	// gRPC Gatewayの起動
 	mux := app.NewGatewayMux()
 	opts := []grpc.DialOption{grpc.WithInsecure()}
-	if err := pb.RegisterLendingBooksServiceHandlerFromEndpoint(app.GetContext(), mux, "localhost:50051", opts); err != nil {
+	if err := pb.RegisterLibraryServiceHandlerFromEndpoint(app.GetContext(), mux, "localhost:50051", opts); err != nil {
 		log.Fatalf("failed to register gateway: %v", err)
 	}
 

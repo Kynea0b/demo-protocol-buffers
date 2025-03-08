@@ -1,109 +1,43 @@
 syntax = "proto3";
-// for proxy
-import "google/api/annotations.proto";
-import "book.proto";
-
 option go_package = "./pkg/grpc";
-
-// for timestamp
 import "google/protobuf/timestamp.proto";
 
-// packageの宣言
-package myapp;
+package account;
 
-// 図書館のアカウント
-message Account {
-  // 借りる人の名前
-  string name = 1;
+service AccountService {
+  rpc RegisterUser(RegisterUserRequest) returns (RegisterUserResponse) {}
+  rpc LoginUser(LoginUserRequest) returns (LoginUserResponse) {}
+  rpc GetUserInfo(GetUserInfoRequest) returns (GetUserInfoResponse) {}
 }
 
-message AccountRequest {
-  message Body {
-    string name = 1;
-    string mail = 2;
-  }
-  Body body = 1;
-  string hobby = 2;
+message RegisterUserRequest {
+  string username = 1;
+  string password = 2;
+  string email = 3;
 }
 
-message AccountResponse {
-  string account_id = 1;
+message RegisterUserResponse {
+  string user_id = 1;
+  google.protobuf.Timestamp registration_date = 2;
 }
 
-// 図書館のアカウント
-message Accounts {
-  // 借りる人の名前
-  repeated Account accounts = 1;
+message LoginUserRequest {
+  string username = 1;
+  string password = 2;
 }
 
-// 貸し出し状況
-message AccountInfo {
-  // 借りた人の名前
-  string name = 1;
-  // 借りている本一覧
-  Books books = 2;
+message LoginUserResponse {
+  string user_id = 1;
+  string token = 2;
 }
 
-// 貸し出しリクエスト
-message BorrowRequest {
-  //　本を借りるアカウント
-  Account account = 1;
-  //　借りたい本
-  Book book = 2;
+message GetUserInfoRequest {
+  string user_id = 1;
 }
 
-message BorrrowResponse {
-  //　本を借りたアカウント
-  Account account = 1;
-  //　借りた本
-  Book book = 2;
-  // 貸し出し日
-  google.protobuf.Timestamp timestamp = 3;
-}
-
-// 本の登録リクエスト
-message RegisterBookRequest {
-  //　冊数
-  uint32 num = 1;
-  //　登録する本のタイトル
-  string title = 2;
-}
-
-message RegisterBookResponse {
-  //　冊数
-  uint32 num = 1;
-  //　登録された本のタイトル
-  string title = 2;
-}
-
-// 本の貸し出しサービス
-service LendingBooksService {
-  // アカウント登録
-  rpc RegisterAccount (AccountRequest) returns (AccountResponse) {
-    option (google.api.http) = {
-      post: "/v1/register/{hobby}"
-      body: "body"
-    };
-  }
-
-  // 本を借りるためのメソッド
-  rpc SendBorrow (BorrowRequest) returns (BorrrowResponse);
-  
-  // 新しい本を登録
-  rpc RegisterBook (RegisterBookRequest) returns (RegisterBookResponse) {
-    option (google.api.http) = {
-      post: "/v1/info/book"
-      body: "*"
-    };
-  }
-  // 本の貸し出し情報を取得
-  rpc GetLendingInfo (Book) returns (Accounts) {
-    option (google.api.http) = { get: "/v1/info/book/{title}" };
-  }
-
-  // アカウント本の貸し出し日を取得
-  rpc GetBorrowedTime (Account) returns (BorrrowResponse) {
-    option (google.api.http) = { get: "/v1/info/account/{name}" };
-  }
+message GetUserInfoResponse {
+  string username = 1;
+  string email = 2;
+  google.protobuf.Timestamp registration_date = 3;
 }
 

@@ -1,6 +1,6 @@
 swagger: "2.0"
 info:
-  title: book.proto
+  title: account.proto
   version: version not set
 consumes:
   - application/json

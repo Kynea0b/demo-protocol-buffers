@@ -1,16 +1,92 @@
 syntax = "proto3";
-// option go_package = "pkg/grpc";
-
+// for proxy
+// for timestamp
+import "google/protobuf/timestamp.proto";
+import "google/api/annotations.proto";
+//import "book.proto";
 option go_package = "./pkg/grpc";
 
-//　借りる本
-message Book {
-  // 本のタイトル
+// packageの宣言
+package library;
+
+message BorrowBookRequest {
+  string book_id = 1;
+  string user_id = 2;
+}
+
+message BorrowBookResponse {
+  string message = 1;
+}
+
+message ReturnBookRequest {
+  string book_id = 1;
+  string user_id = 2;
+}
+
+message ReturnBookResponse {
+  string message = 1;
+}
+
+message SearchBookRequest {
   string title = 1;
 }
 
-// 借りた本
-message Books {
-  // 借りた本のタイトル一覧
-  repeated string titles = 1;
+message SearchBookResponse {
+  repeated Book books = 1;
 }
+
+message Book {
+  string book_id = 1;
+  string title = 2;
+  string author = 3;
+}
+
+message BorrowRecord {
+  string book_id = 1;
+  string user_id = 2;
+  google.protobuf.Timestamp borrow_date = 3;
+  google.protobuf.Timestamp return_due_date = 4;
+  google.protobuf.Timestamp return_date = 5;
+}
+
+
+// 本の貸し出しサービス
+service LibraryService {
+//  // アカウント登録
+//  rpc RegisterAccount (AccountRequest) returns (AccountResponse) {
+//    option (google.api.http) = {
+//      post: "/v1/register/{hobby}"
+//      body: "body"
+//    };
+//  }
+
+  // 本を借りるためのメソッド
+  rpc BorrowBook (BorrowBookRequest) returns (BorrowBookResponse){
+    option (google.api.http) = {
+      post: "/v1/info/book"
+      body: "*"
+    };
+  }
+
+  rpc ReturnBook(ReturnBookRequest) returns (ReturnBookResponse);
+
+  rpc SearchBook(SearchBookRequest) returns (SearchBookResponse);
+  
+  // 新しい本を登録
+//  rpc RegisterBook (RegisterBookRequest) returns (RegisterBookResponse) {
+//    option (google.api.http) = {
+//      post: "/v1/info/book"
+//      body: "*"
+//    };
+//  }
+//  // 本の貸し出し情報を取得
+//  rpc GetLendingInfo (Book) returns (Accounts) {
+//    option (google.api.http) = { get: "/v1/info/book/{title}" };
+//  }
+
+//  // アカウント本の貸し出し日を取得
+//  rpc GetBorrowedTime (Account) returns (BorrrowBookResponse) {
+//    option (google.api.http) = { get: "/v1/info/account/{name}" };
+//  }
+}
+

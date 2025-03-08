@@ -39,7 +39,7 @@ login_user_with_api:
 	curl -X POST -H "Content-Type: application/json" -d '{"username":"testuser","password":"password123"}' http://localhost:8080/v1/accounts/login
 
 get_user_info:
-	grpcurl -plaintext -d '{"user_id":"a6480bd2-ef6f-430f-ba3c-649fec8cf21e"}' localhost:50051 account.AccountService.GetUserInfo
+	grpcurl -plaintext -d '{"user_id":"f6004176-19c0-47f6-b578-5427701e7a80"}' localhost:50051 account.AccountService.GetUserInfo
 
 get_user_info_with_api:
 	curl http://localhost:8080/v1/accounts/"427c86e3-086e-4fc1-8a88-9a8d11e8a6e5"

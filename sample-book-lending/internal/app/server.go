@@ -16,15 +16,21 @@ import (
 
 type server struct {
 	pb.UnimplementedLibraryServiceServer
+	pb.UnimplementedAccountServiceServer
 	libraryService *service.LibraryService
+	accountService *service.AccountService
 }
 
 func NewServer() *server {
-	db := data.NewGoLevelDB("./books.db")
+	bookDB := data.NewGoLevelDB("./books.db")
+	accountDB := data.NewAccountDB("./accounts.db") // アカウント用のDBを初期化
+
 	b := data.Book{Id: "123", Copy: 10}
-	db.AddBook(b)
+	bookDB.AddBook(b)
+
 	return &server{
-		libraryService: service.NewLibraryService(db),
+		libraryService: service.NewLibraryService(bookDB),
+		accountService: service.NewAccountService(accountDB), // アカウントサービスを初期化
 	}
 }
 
@@ -32,6 +38,18 @@ func (s *server) BorrowBook(ctx context.Context, req *pb.BorrowBookRequest) (*pb
 	fmt.Println("debug: s.libraryService.BorrowBook(ctx, req) is called")
 	fmt.Println(req)
 	return s.libraryService.BorrowBook(ctx, req)
+}
+
+func (s *server) RegisterUser(ctx context.Context, req *pb.RegisterUserRequest) (*pb.RegisterUserResponse, error) {
+	fmt.Println("debug: s.accountService.RegisterUser(ctx, req) is called")
+	fmt.Println(req)
+	return s.accountService.RegisterUser(ctx, req)
+}
+
+func (s *server) GetUserInfo(ctx context.Context, req *pb.GetUserInfoRequest) (*pb.GetUserInfoResponse, error) {
+	fmt.Println("debug: s.accountService.GetUserInfo(ctx, req) is called")
+	fmt.Println(req)
+	return s.accountService.GetUserInfo(ctx, req)
 }
 
 // 他のRPCメソッドも同様に実装

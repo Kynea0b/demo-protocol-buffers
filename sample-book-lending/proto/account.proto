@@ -1,14 +1,9 @@
 syntax = "proto3";
+import "google/api/annotations.proto";
 option go_package = "./pkg/grpc";
 import "google/protobuf/timestamp.proto";
 
 package account;
-
-service AccountService {
-  rpc RegisterUser(RegisterUserRequest) returns (RegisterUserResponse) {}
-  rpc LoginUser(LoginUserRequest) returns (LoginUserResponse) {}
-  rpc GetUserInfo(GetUserInfoRequest) returns (GetUserInfoResponse) {}
-}
 
 message RegisterUserRequest {
   string username = 1;
@@ -39,5 +34,26 @@ message GetUserInfoResponse {
   string username = 1;
   string email = 2;
   google.protobuf.Timestamp registration_date = 3;
+}
+
+service AccountService {
+  rpc RegisterUser(RegisterUserRequest) returns (RegisterUserResponse) {
+    option (google.api.http) = {
+      post: "/v1/accounts/register"
+      body: "*"
+    };
+  }
+  rpc LoginUser(LoginUserRequest) returns (LoginUserResponse) {
+    option (google.api.http) = {
+      post: "/v1/accounts/login"
+      body: "*"
+    };
+  }
+  rpc GetUserInfo(GetUserInfoRequest) returns (GetUserInfoResponse) {
+    option (google.api.http) = {
+      get: "/v1/accounts/{user_id}"
+//      body: "*"
+    };
+  }
 }
 

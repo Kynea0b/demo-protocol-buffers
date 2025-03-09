@@ -52,6 +52,12 @@ func (s *server) GetUserInfo(ctx context.Context, req *pb.GetUserInfoRequest) (*
 	return s.accountService.GetUserInfo(ctx, req)
 }
 
+func (s *server) LoginUser(ctx context.Context, req *pb.LoginUserRequest) (*pb.LoginUserResponse, error) {
+	fmt.Println("debug: s.accountService.GetUserInfo(ctx, req) is called")
+	fmt.Println(req)
+	return s.accountService.LoginUser(ctx, req)
+}
+
 // 他のRPCメソッドも同様に実装
 
 func NewGatewayMux() *runtime.ServeMux {

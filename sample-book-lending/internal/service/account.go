@@ -3,7 +3,9 @@ package service
 import (
 	"context"
 	"errors"
+	"github.com/golang-jwt/jwt/v5" // JWTライブラリ
 	"log"
+	"time"
 
 	"golang.org/x/crypto/bcrypt"
 
@@ -80,7 +82,31 @@ func (s *AccountService) GetUserInfo(ctx context.Context, req *pb.GetUserInfoReq
 }
 
 // トークン生成関数 (JWTなど)
-func generateToken(username string) (string, error) {
-	// JWTトークン生成処理を実装
-	return "dummy_token", nil
+//
+//	func generateToken(username string) (string, error) {
+//		// JWTトークン生成処理を実装
+//		return "dummy_token", nil
+//	}
+//
+// JWTのシークレットキー
+var jwtSecretKey = []byte("your-secret-key")
+
+// JWTの有効期限 (例: 1時間)
+var jwtExpiration = time.Hour // ここで定義
+// JWTトークン生成関数
+func generateToken(userID string) (string, error) {
+	// JWTのペイロードを作成
+	claims := jwt.MapClaims{
+		"user_id": userID,
+		"exp":     time.Now().Add(jwtExpiration).Unix(),
+	}
+
+	// ヘッダーとペイロードからトークンを作成
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	signedToken, err := token.SignedString(jwtSecretKey)
+	if err != nil {
+		return "", err
+	}
+
+	return signedToken, nil
 }

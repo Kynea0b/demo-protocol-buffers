@@ -1,10 +1,13 @@
 package main
 
 import (
+	"context"
 	"google.golang.org/grpc/reflection"
 	"log"
 	"net"
 	"net/http"
+
+	"sample-book-lending/internal/auth"
 
 	"google.golang.org/grpc"
 
@@ -14,8 +17,9 @@ import (
 
 func main() {
 	// gRPCサーバーの起動
-	grpcServer := grpc.NewServer()
-
+	grpcServer := grpc.NewServer(
+		grpc.UnaryInterceptor(authInterceptor), // インターセプターを登録 auth追加のため
+	)
 	// リフレクションAPIの登録 (追加)
 	reflection.Register(grpcServer)
 	// サービスの登録
@@ -53,4 +57,21 @@ func main() {
 	if err := httpServer.ListenAndServe(); err != nil {
 		log.Fatalf("failed to serve HTTP: %v", err)
 	}
+}
+
+// 認証インターセプター
+func authInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
+	// 認証が不要なメソッドはスキップ
+	if info.FullMethod == "/account.AccountService/RegisterUser" || info.FullMethod == "/account.AccountService/LoginUser" {
+		return handler(ctx, req)
+	}
+
+	// 認証トークンを検証
+	newCtx, err := auth.AuthMiddleware(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	// コンテキストを更新して次のハンドラーを呼び出す
+	return handler(newCtx, req)
 }

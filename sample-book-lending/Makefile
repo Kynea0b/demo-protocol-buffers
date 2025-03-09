@@ -23,28 +23,6 @@ borrow_book_with_restapi:
 	curl -X POST -H "Content-Type: application/json" -d '{"book_id":"123","user_id":"xeeddfahwiophg"}' http://localhost:8080/v1/info/book
 
 
-# Register User
-register_user_with_grpc:
-	grpcurl -plaintext -d '{"username":"testuserhoge","password":"password123","email":"testhoge@example.com"}' localhost:50051 account.AccountService.RegisterUser
-
-#todo not found
-register_user_with_api:
-	curl -X POST -H "Content-Type: application/json" -d '{"username":"testuser","password":"password123","email":"test@example.com"}' http://localhost:8080/v1/accounts/register
-
-# Login
-login:
-	grpcurl -plaintext -d '{"username":"testuser","password":"password123"}' localhost:50051 account.AccountService.LoginUser
-
-login_user_with_api:
-	curl -X POST -H "Content-Type: application/json" -d '{"username":"testuser","password":"password123"}' http://localhost:8080/v1/accounts/login
-
-get_user_info:
-	grpcurl -plaintext -d '{"user_id":"f6004176-19c0-47f6-b578-5427701e7a80"}' localhost:50051 account.AccountService.GetUserInfo
-
-get_user_info_with_api:
-	curl http://localhost:8080/v1/accounts/"427c86e3-086e-4fc1-8a88-9a8d11e8a6e5"
-
-
 fmt:
 	go fmt ./...
 

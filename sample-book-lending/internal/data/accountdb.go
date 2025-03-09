@@ -69,23 +69,37 @@ func (db *AccountDB) GetUser(id string) (*User, error) {
 }
 
 func (db *AccountDB) GetUserByUsername(username string) (*User, error) {
+	fmt.Println("GetUserByUsername called with username:", username) // デバッグ用
+
 	iter := db.Db.NewIterator(util.BytesPrefix([]byte("")), nil)
+	defer iter.Release() // deferでiter.Release()を確実に実行
+
 	for iter.Next() {
 		userData := string(iter.Value())
-		var u, p, e string
-		_, err := fmt.Sscanf(userData, "%s:%s:%s", &u, &p, &e)
-		if err != nil {
-			return nil, err
+		parts := strings.Split(userData, ":")
+
+		if len(parts) != 3 {
+			fmt.Println("Invalid user data format:", userData) // デバッグ用
+			continue                                           // 次のレコードへ
 		}
+
+		u := parts[0]
+		p := parts[1]
+		e := parts[2]
+
 		if u == username {
+			id := string(iter.Key())
+			fmt.Println("User found:", username, "ID:", id) // デバッグ用
+
 			return &User{
-				ID:       string(iter.Key()),
+				ID:       id,
 				Username: u,
 				Password: []byte(p),
 				Email:    e,
 			}, nil
 		}
 	}
-	iter.Release()
+
+	fmt.Println("User not found:", username) // デバッグ用
 	return nil, errors.New("user not found")
 }

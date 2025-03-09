@@ -179,38 +179,34 @@
             <ul>
               
                 <li>
-                  <a href="#myapp.Account"><span class="badge">M</span>Account</a>
+                  <a href="#account.GetUserInfoRequest"><span class="badge">M</span>GetUserInfoRequest</a>
                 </li>
               
                 <li>
-                  <a href="#myapp.AccountInfo"><span class="badge">M</span>AccountInfo</a>
+                  <a href="#account.GetUserInfoResponse"><span class="badge">M</span>GetUserInfoResponse</a>
                 </li>
               
                 <li>
-                  <a href="#myapp.Accounts"><span class="badge">M</span>Accounts</a>
+                  <a href="#account.LoginUserRequest"><span class="badge">M</span>LoginUserRequest</a>
                 </li>
               
                 <li>
-                  <a href="#myapp.BorrowRequest"><span class="badge">M</span>BorrowRequest</a>
+                  <a href="#account.LoginUserResponse"><span class="badge">M</span>LoginUserResponse</a>
                 </li>
               
                 <li>
-                  <a href="#myapp.BorrrowResponse"><span class="badge">M</span>BorrrowResponse</a>
+                  <a href="#account.RegisterUserRequest"><span class="badge">M</span>RegisterUserRequest</a>
                 </li>
               
                 <li>
-                  <a href="#myapp.RegisterBookRequest"><span class="badge">M</span>RegisterBookRequest</a>
-                </li>
-              
-                <li>
-                  <a href="#myapp.RegisterBookResponse"><span class="badge">M</span>RegisterBookResponse</a>
+                  <a href="#account.RegisterUserResponse"><span class="badge">M</span>RegisterUserResponse</a>
                 </li>
               
               
               
               
                 <li>
-                  <a href="#myapp.LendingBooksService"><span class="badge">S</span>LendingBooksService</a>
+                  <a href="#account.AccountService"><span class="badge">S</span>AccountService</a>
                 </li>
               
             </ul>
@@ -222,15 +218,43 @@
             <ul>
               
                 <li>
-                  <a href="#.Book"><span class="badge">M</span>Book</a>
+                  <a href="#library.Book"><span class="badge">M</span>Book</a>
                 </li>
               
                 <li>
-                  <a href="#.Books"><span class="badge">M</span>Books</a>
+                  <a href="#library.BorrowBookRequest"><span class="badge">M</span>BorrowBookRequest</a>
+                </li>
+              
+                <li>
+                  <a href="#library.BorrowBookResponse"><span class="badge">M</span>BorrowBookResponse</a>
+                </li>
+              
+                <li>
+                  <a href="#library.BorrowRecord"><span class="badge">M</span>BorrowRecord</a>
+                </li>
+              
+                <li>
+                  <a href="#library.ReturnBookRequest"><span class="badge">M</span>ReturnBookRequest</a>
+                </li>
+              
+                <li>
+                  <a href="#library.ReturnBookResponse"><span class="badge">M</span>ReturnBookResponse</a>
+                </li>
+              
+                <li>
+                  <a href="#library.SearchBookRequest"><span class="badge">M</span>SearchBookRequest</a>
+                </li>
+              
+                <li>
+                  <a href="#library.SearchBookResponse"><span class="badge">M</span>SearchBookResponse</a>
                 </li>
               
               
               
+              
+                <li>
+                  <a href="#library.LibraryService"><span class="badge">S</span>LibraryService</a>
+                </li>
               
             </ul>
           </li>
@@ -247,117 +271,7 @@
       <p></p>
 
       
-        <h3 id="myapp.Account">Account</h3>
-        <p>図書館のアカウント</p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>name</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>借りる人の名前 </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="myapp.AccountInfo">AccountInfo</h3>
-        <p>貸し出し状況</p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>name</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>借りた人の名前 </p></td>
-                </tr>
-              
-                <tr>
-                  <td>books</td>
-                  <td><a href="#Books">Books</a></td>
-                  <td></td>
-                  <td><p>借りている本一覧 </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="myapp.Accounts">Accounts</h3>
-        <p>図書館のアカウント</p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>accounts</td>
-                  <td><a href="#myapp.Account">Account</a></td>
-                  <td>repeated</td>
-                  <td><p>借りる人の名前 </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="myapp.BorrowRequest">BorrowRequest</h3>
-        <p>貸し出しリクエスト</p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>account</td>
-                  <td><a href="#myapp.Account">Account</a></td>
-                  <td></td>
-                  <td><p>本を借りるアカウント </p></td>
-                </tr>
-              
-                <tr>
-                  <td>book</td>
-                  <td><a href="#Book">Book</a></td>
-                  <td></td>
-                  <td><p>借りたい本 </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="myapp.BorrrowResponse">BorrrowResponse</h3>
+        <h3 id="account.GetUserInfoRequest">GetUserInfoRequest</h3>
         <p></p>
 
         
@@ -368,24 +282,48 @@
             <tbody>
               
                 <tr>
-                  <td>account</td>
-                  <td><a href="#myapp.Account">Account</a></td>
+                  <td>user_id</td>
+                  <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p>本を借りたアカウント </p></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="account.GetUserInfoResponse">GetUserInfoResponse</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>username</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
                 </tr>
               
                 <tr>
-                  <td>book</td>
-                  <td><a href="#Book">Book</a></td>
+                  <td>email</td>
+                  <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p>借りた本 </p></td>
+                  <td><p> </p></td>
                 </tr>
               
                 <tr>
-                  <td>timestamp</td>
+                  <td>registration_date</td>
                   <td><a href="#google.protobuf.Timestamp">google.protobuf.Timestamp</a></td>
                   <td></td>
-                  <td><p>貸し出し日 </p></td>
+                  <td><p> </p></td>
                 </tr>
               
             </tbody>
@@ -395,38 +333,7 @@
 
         
       
-        <h3 id="myapp.RegisterBookRequest">RegisterBookRequest</h3>
-        <p>本の登録リクエスト</p>
-
-        
-          <table class="field-table">
-            <thead>
-              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
-            </thead>
-            <tbody>
-              
-                <tr>
-                  <td>num</td>
-                  <td><a href="#uint32">uint32</a></td>
-                  <td></td>
-                  <td><p>冊数 </p></td>
-                </tr>
-              
-                <tr>
-                  <td>title</td>
-                  <td><a href="#string">string</a></td>
-                  <td></td>
-                  <td><p>登録する本のタイトル </p></td>
-                </tr>
-              
-            </tbody>
-          </table>
-
-          
-
-        
-      
-        <h3 id="myapp.RegisterBookResponse">RegisterBookResponse</h3>
+        <h3 id="account.LoginUserRequest">LoginUserRequest</h3>
         <p></p>
 
         
@@ -437,17 +344,117 @@
             <tbody>
               
                 <tr>
-                  <td>num</td>
-                  <td><a href="#uint32">uint32</a></td>
+                  <td>username</td>
+                  <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p>冊数 </p></td>
+                  <td><p> </p></td>
                 </tr>
               
                 <tr>
-                  <td>title</td>
+                  <td>password</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p>登録された本のタイトル </p></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="account.LoginUserResponse">LoginUserResponse</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>user_id</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>token</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="account.RegisterUserRequest">RegisterUserRequest</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>username</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>password</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>email</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="account.RegisterUserResponse">RegisterUserResponse</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>user_id</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>registration_date</td>
+                  <td><a href="#google.protobuf.Timestamp">google.protobuf.Timestamp</a></td>
+                  <td></td>
+                  <td><p> </p></td>
                 </tr>
               
             </tbody>
@@ -463,8 +470,8 @@
       
 
       
-        <h3 id="myapp.LendingBooksService">LendingBooksService</h3>
-        <p>本の貸し出しサービス</p>
+        <h3 id="account.AccountService">AccountService</h3>
+        <p></p>
         <table class="enum-table">
           <thead>
             <tr><td>Method Name</td><td>Request Type</td><td>Response Type</td><td>Description</td></tr>
@@ -472,31 +479,24 @@
           <tbody>
             
               <tr>
-                <td>SendBorrow</td>
-                <td><a href="#myapp.BorrowRequest">BorrowRequest</a></td>
-                <td><a href="#myapp.BorrrowResponse">BorrrowResponse</a></td>
-                <td><p>本を借りるためのメソッド</p></td>
+                <td>RegisterUser</td>
+                <td><a href="#account.RegisterUserRequest">RegisterUserRequest</a></td>
+                <td><a href="#account.RegisterUserResponse">RegisterUserResponse</a></td>
+                <td><p></p></td>
               </tr>
             
               <tr>
-                <td>RegisterBook</td>
-                <td><a href="#myapp.RegisterBookRequest">RegisterBookRequest</a></td>
-                <td><a href="#myapp.RegisterBookResponse">RegisterBookResponse</a></td>
-                <td><p>新しい本を登録</p></td>
+                <td>LoginUser</td>
+                <td><a href="#account.LoginUserRequest">LoginUserRequest</a></td>
+                <td><a href="#account.LoginUserResponse">LoginUserResponse</a></td>
+                <td><p></p></td>
               </tr>
             
               <tr>
-                <td>GetLendingInfo</td>
-                <td><a href="#Book">.Book</a></td>
-                <td><a href="#myapp.Accounts">Accounts</a></td>
-                <td><p>本の貸し出し情報を取得</p></td>
-              </tr>
-            
-              <tr>
-                <td>GetBorrowedTime</td>
-                <td><a href="#myapp.Account">Account</a></td>
-                <td><a href="#myapp.BorrrowResponse">BorrrowResponse</a></td>
-                <td><p>アカウント本の貸し出し日を取得</p></td>
+                <td>GetUserInfo</td>
+                <td><a href="#account.GetUserInfoRequest">GetUserInfoRequest</a></td>
+                <td><a href="#account.GetUserInfoResponse">GetUserInfoResponse</a></td>
+                <td><p></p></td>
               </tr>
             
           </tbody>
@@ -520,9 +520,9 @@
               
               
               <tr>
-                <td>RegisterBook</td>
+                <td>RegisterUser</td>
                 <td>POST</td>
-                <td>/v1/info/book</td>
+                <td>/v1/accounts/register</td>
                 <td>*</td>
               </tr>
               
@@ -530,19 +530,19 @@
               
               
               <tr>
-                <td>GetLendingInfo</td>
-                <td>GET</td>
-                <td>/v1/info/book/{title}</td>
-                <td></td>
+                <td>LoginUser</td>
+                <td>POST</td>
+                <td>/v1/accounts/login</td>
+                <td>*</td>
               </tr>
               
             
               
               
               <tr>
-                <td>GetBorrowedTime</td>
+                <td>GetUserInfo</td>
                 <td>GET</td>
-                <td>/v1/info/account/{name}</td>
+                <td>/v1/accounts/{user_id}</td>
                 <td></td>
               </tr>
               
@@ -556,11 +556,211 @@
       <div class="file-heading">
         <h2 id="book.proto">book.proto</h2><a href="#title">Top</a>
       </div>
-      <p>option go_package = "pkg/grpc";</p>
+      <p></p>
 
       
-        <h3 id=".Book">Book</h3>
-        <p>借りる本</p>
+        <h3 id="library.Book">Book</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>book_id</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>title</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>author</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="library.BorrowBookRequest">BorrowBookRequest</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>book_id</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>user_id</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="library.BorrowBookResponse">BorrowBookResponse</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>message</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="library.BorrowRecord">BorrowRecord</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>book_id</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>user_id</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>borrow_date</td>
+                  <td><a href="#google.protobuf.Timestamp">google.protobuf.Timestamp</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>return_due_date</td>
+                  <td><a href="#google.protobuf.Timestamp">google.protobuf.Timestamp</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>return_date</td>
+                  <td><a href="#google.protobuf.Timestamp">google.protobuf.Timestamp</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="library.ReturnBookRequest">ReturnBookRequest</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>book_id</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+                <tr>
+                  <td>user_id</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="library.ReturnBookResponse">ReturnBookResponse</h3>
+        <p></p>
+
+        
+          <table class="field-table">
+            <thead>
+              <tr><td>Field</td><td>Type</td><td>Label</td><td>Description</td></tr>
+            </thead>
+            <tbody>
+              
+                <tr>
+                  <td>message</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p> </p></td>
+                </tr>
+              
+            </tbody>
+          </table>
+
+          
+
+        
+      
+        <h3 id="library.SearchBookRequest">SearchBookRequest</h3>
+        <p></p>
 
         
           <table class="field-table">
@@ -573,7 +773,7 @@
                   <td>title</td>
                   <td><a href="#string">string</a></td>
                   <td></td>
-                  <td><p>本のタイトル </p></td>
+                  <td><p> </p></td>
                 </tr>
               
             </tbody>
@@ -583,8 +783,8 @@
 
         
       
-        <h3 id=".Books">Books</h3>
-        <p>借りた本</p>
+        <h3 id="library.SearchBookResponse">SearchBookResponse</h3>
+        <p></p>
 
         
           <table class="field-table">
@@ -594,10 +794,10 @@
             <tbody>
               
                 <tr>
-                  <td>titles</td>
-                  <td><a href="#string">string</a></td>
+                  <td>books</td>
+                  <td><a href="#library.Book">Book</a></td>
                   <td>repeated</td>
-                  <td><p>借りた本のタイトル一覧 </p></td>
+                  <td><p> </p></td>
                 </tr>
               
             </tbody>
@@ -613,6 +813,67 @@
       
 
       
+        <h3 id="library.LibraryService">LibraryService</h3>
+        <p>本の貸し出しサービス</p><p>// アカウント登録</p><p>rpc RegisterAccount (AccountRequest) returns (AccountResponse) {</p><p>option (google.api.http) = {</p><p>post: "/v1/register/{hobby}"</p><p>body: "body"</p><p>};</p><p>}</p>
+        <table class="enum-table">
+          <thead>
+            <tr><td>Method Name</td><td>Request Type</td><td>Response Type</td><td>Description</td></tr>
+          </thead>
+          <tbody>
+            
+              <tr>
+                <td>BorrowBook</td>
+                <td><a href="#library.BorrowBookRequest">BorrowBookRequest</a></td>
+                <td><a href="#library.BorrowBookResponse">BorrowBookResponse</a></td>
+                <td><p>本を借りるためのメソッド</p></td>
+              </tr>
+            
+              <tr>
+                <td>ReturnBook</td>
+                <td><a href="#library.ReturnBookRequest">ReturnBookRequest</a></td>
+                <td><a href="#library.ReturnBookResponse">ReturnBookResponse</a></td>
+                <td><p></p></td>
+              </tr>
+            
+              <tr>
+                <td>SearchBook</td>
+                <td><a href="#library.SearchBookRequest">SearchBookRequest</a></td>
+                <td><a href="#library.SearchBookResponse">SearchBookResponse</a></td>
+                <td><p></p></td>
+              </tr>
+            
+          </tbody>
+        </table>
+
+        
+          
+          
+          <h4>Methods with HTTP bindings</h4>
+          <table>
+            <thead>
+              <tr>
+                <td>Method Name</td>
+                <td>Method</td>
+                <td>Pattern</td>
+                <td>Body</td>
+              </tr>
+            </thead>
+            <tbody>
+            
+              
+              
+              <tr>
+                <td>BorrowBook</td>
+                <td>POST</td>
+                <td>/v1/info/book</td>
+                <td>*</td>
+              </tr>
+              
+            
+            </tbody>
+          </table>
+          
+        
     
 
     <h2 id="scalar-value-types">Scalar Value Types</h2>

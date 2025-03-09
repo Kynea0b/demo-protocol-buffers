@@ -3,6 +3,7 @@ package app
 import (
 	"context"
 	"fmt"
+	"log"
 
 	//"log"
 
@@ -23,7 +24,13 @@ type server struct {
 
 func NewServer() *server {
 	bookDB := data.NewGoLevelDB("./books.db")
-	accountDB := data.NewAccountDB("./accounts.db") // アカウント用のDBを初期化
+	//accountDB := data.NewAccountDB("./accounts.db") // アカウント用のDBを初期化
+	// LevelDBStore を使用して AccountDB を初期化
+	accountStore, err := data.NewLevelDBStore("./accounts.db")
+	if err != nil {
+		log.Fatalf("failed to create account store: %v", err)
+	}
+	accountDB := data.NewAccountDB(accountStore)
 
 	b := data.Book{Id: "123", Copy: 10}
 	bookDB.AddBook(b)

@@ -1,26 +1,20 @@
 package data
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"log"
-	"strings"
 
 	"github.com/google/uuid"
-	"github.com/syndtr/goleveldb/leveldb"
-	"github.com/syndtr/goleveldb/leveldb/util"
 )
 
 type AccountDB struct {
-	Db *leveldb.DB
+	Store KeyValueStore
 }
 
-func NewAccountDB(path string) *AccountDB {
-	db, err := leveldb.OpenFile(path, nil)
-	if err != nil {
-		log.Fatalf("failed to open accountdb: %v", err)
-	}
-	return &AccountDB{Db: db}
+func NewAccountDB(store KeyValueStore) *AccountDB {
+	return &AccountDB{Store: store}
 }
 
 type User struct {
@@ -31,75 +25,96 @@ type User struct {
 }
 
 func (db *AccountDB) AddUser(user *User) (string, error) {
-	id := uuid.New().String()
-	user.ID = id
-	err := db.Db.Put([]byte(id), []byte(user.Username+":"+string(user.Password)+":"+user.Email), nil)
+	exists, err := db.UserExists(user.Username, user.Email)
 	if err != nil {
 		return "", err
+	}
+
+	if exists {
+		return "", ErrAlreadyExists
+	}
+
+	id := uuid.New().String()
+	user.ID = id
+
+	userData, err := json.Marshal(user)
+	if err != nil {
+		return "", fmt.Errorf("failed to marshal user data: %w", err)
+	}
+
+	err = db.Store.Put([]byte(id), userData)
+	if err != nil {
+		return "", ErrInternal
 	}
 	return id, nil
 }
 
 func (db *AccountDB) GetUser(id string) (*User, error) {
-	fmt.Println("GetUser called with id:", id) // デバッグ用
-	data, err := db.Db.Get([]byte(id), nil)
+	fmt.Println("GetUser called with id:", id)
+
+	data, err := db.Store.Get([]byte(id))
 	if err != nil {
-		if err == leveldb.ErrNotFound {
-			return nil, errors.New("user not found")
+		if errors.Is(err, ErrNotFound) {
+			return nil, ErrNotFound
 		}
-		return nil, fmt.Errorf("failed to get user: %v", err)
+		return nil, fmt.Errorf("failed to get user data from store: %w", err)
 	}
 
-	userData := string(data)
-	parts := strings.Split(userData, ":")
-	if len(parts) != 3 {
-		return nil, errors.New("invalid user data format")
+	var user User
+	err = json.Unmarshal(data, &user)
+	if err != nil {
+		return nil, fmt.Errorf("failed to unmarshal user data: %w", err)
 	}
 
-	username := parts[0]
-	password := parts[1]
-	email := parts[2]
+	return &user, nil
+}
 
-	return &User{
-		ID:       id,
-		Username: username,
-		Password: []byte(password),
-		Email:    email,
-	}, nil
+func (db *AccountDB) UserExists(username, email string) (bool, error) {
+	//LevelDBStoreインスタンスを取得
+	levelDBStore, ok := db.Store.(*LevelDBStore)
+	if !ok {
+		return false, errors.New("store is not LevelDBStore")
+	}
+	//LevelDBのDBインスタンスを取得
+	iter := levelDBStore.DB.NewIterator(nil, nil)
+	defer iter.Release()
+	for iter.Next() {
+		// ログを追加
+		log.Printf("Raw data from LevelDB: %s", iter.Value())
+
+		var user User
+		err := json.Unmarshal(iter.Value(), &user)
+		if err != nil {
+			log.Printf("failed to unmarshal user data: %v, raw data: %s", err, iter.Value())
+			return false, fmt.Errorf("failed to unmarshal user data: %w", err)
+		}
+
+		if user.Username == username && user.Email == email {
+			return true, nil
+		}
+	}
+	return false, nil
 }
 
 func (db *AccountDB) GetUserByUsername(username string) (*User, error) {
-	fmt.Println("GetUserByUsername called with username:", username) // デバッグ用
-
-	iter := db.Db.NewIterator(util.BytesPrefix([]byte("")), nil)
-	defer iter.Release() // deferでiter.Release()を確実に実行
-
+	//LevelDBStoreインスタンスを取得
+	levelDBStore, ok := db.Store.(*LevelDBStore)
+	if !ok {
+		return nil, errors.New("store is not LevelDBStore")
+	}
+	//LevelDBのDBインスタンスを取得
+	iter := levelDBStore.DB.NewIterator(nil, nil)
+	defer iter.Release()
 	for iter.Next() {
-		userData := string(iter.Value())
-		parts := strings.Split(userData, ":")
-
-		if len(parts) != 3 {
-			fmt.Println("Invalid user data format:", userData) // デバッグ用
-			continue                                           // 次のレコードへ
+		var user User
+		err := json.Unmarshal(iter.Value(), &user)
+		if err != nil {
+			return nil, fmt.Errorf("failed to unmarshal user data: %w", err)
 		}
 
-		u := parts[0]
-		p := parts[1]
-		e := parts[2]
-
-		if u == username {
-			id := string(iter.Key())
-			fmt.Println("User found:", username, "ID:", id) // デバッグ用
-
-			return &User{
-				ID:       id,
-				Username: u,
-				Password: []byte(p),
-				Email:    e,
-			}, nil
+		if user.Username == username {
+			return &user, nil
 		}
 	}
-
-	fmt.Println("User not found:", username) // デバッグ用
-	return nil, errors.New("user not found")
+	return nil, ErrNotFound
 }

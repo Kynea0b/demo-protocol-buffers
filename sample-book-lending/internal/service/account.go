@@ -4,6 +4,8 @@ import (
 	"context"
 	"errors"
 	"github.com/golang-jwt/jwt/v5" // JWTライブラリ
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"log"
 	"time"
 
@@ -50,7 +52,7 @@ func (s *AccountService) LoginUser(ctx context.Context, req *pb.LoginUserRequest
 	user, err := s.db.GetUserByUsername(req.Username)
 	if err != nil {
 		log.Printf("failed to get user: %v", err)
-		return nil, errors.New("failed to login")
+		return nil, status.Errorf(codes.Unauthenticated, "invalid username or password")
 	}
 
 	// パスワードを検証

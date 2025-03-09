@@ -22,6 +22,10 @@ borrow_book_with_grpc:
 borrow_book_with_restapi:
 	curl -X POST -H "Content-Type: application/json" -d '{"book_id":"123","user_id":"xeeddfahwiophg"}' http://localhost:8080/v1/info/book
 
+RANDOM_NAME := $(shell openssl rand -base64 12 | tr -d '/+=' | head -c 12)
+
+test-grpc:
+	bash -xe test/test_account_service_grpc.sh $(RANDOM_NAME)
 
 fmt:
 	go fmt ./...

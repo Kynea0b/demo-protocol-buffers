@@ -1,13 +1,66 @@
 swagger: "2.0"
 info:
-  title: account.proto
+  title: packageの宣言
   version: version not set
 consumes:
   - application/json
 produces:
   - application/json
-paths: {}
+paths:
+  /v1/info/book:
+    post:
+      summary: 本を借りるためのメソッド
+      operationId: LibraryService_BorrowBook
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/libraryBorrowBookResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/libraryBorrowBookRequest'
 definitions:
+  libraryBook:
+    type: object
+    properties:
+      bookId:
+        type: string
+      title:
+        type: string
+      author:
+        type: string
+  libraryBorrowBookRequest:
+    type: object
+    properties:
+      bookId:
+        type: string
+      userId:
+        type: string
+  libraryBorrowBookResponse:
+    type: object
+    properties:
+      message:
+        type: string
+  libraryReturnBookResponse:
+    type: object
+    properties:
+      message:
+        type: string
+  librarySearchBookResponse:
+    type: object
+    properties:
+      books:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/libraryBook'
   protobufAny:
     type: object
     properties:

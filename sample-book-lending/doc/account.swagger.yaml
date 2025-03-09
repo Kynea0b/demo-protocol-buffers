@@ -1,40 +1,20 @@
 swagger: "2.0"
 info:
-  title: packageの宣言
+  title: account.proto
   version: version not set
 consumes:
   - application/json
 produces:
   - application/json
 paths:
-  /v1/info/account/{name}:
-    get:
-      summary: アカウント本の貸し出し日を取得
-      operationId: LendingBooksService_GetBorrowedTime
-      responses:
-        "200":
-          description: A successful response.
-          schema:
-            $ref: '#/definitions/myappBorrrowResponse'
-        default:
-          description: An unexpected error response.
-          schema:
-            $ref: '#/definitions/rpcStatus'
-      parameters:
-        - name: name
-          description: 借りる人の名前
-          in: path
-          required: true
-          type: string
-  /v1/info/book:
+  /v1/accounts/login:
     post:
-      summary: 新しい本を登録
-      operationId: LendingBooksService_RegisterBook
+      operationId: AccountService_LoginUser
       responses:
         "200":
           description: A successful response.
           schema:
-            $ref: '#/definitions/myappRegisterBookResponse'
+            $ref: '#/definitions/accountLoginUserResponse'
         default:
           description: An unexpected error response.
           schema:
@@ -44,85 +24,84 @@ paths:
           in: body
           required: true
           schema:
-            $ref: '#/definitions/myappRegisterBookRequest'
-  /v1/info/book/{title}:
-    get:
-      summary: 本の貸し出し情報を取得
-      operationId: LendingBooksService_GetLendingInfo
+            $ref: '#/definitions/accountLoginUserRequest'
+  /v1/accounts/register:
+    post:
+      operationId: AccountService_RegisterUser
       responses:
         "200":
           description: A successful response.
           schema:
-            $ref: '#/definitions/myappAccounts'
+            $ref: '#/definitions/accountRegisterUserResponse'
         default:
           description: An unexpected error response.
           schema:
             $ref: '#/definitions/rpcStatus'
       parameters:
-        - name: title
-          description: 本のタイトル
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/accountRegisterUserRequest'
+  /v1/accounts/{userId}:
+    get:
+      operationId: AccountService_GetUserInfo
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/accountGetUserInfoResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: userId
           in: path
           required: true
           type: string
 definitions:
-  Book:
+  accountGetUserInfoResponse:
     type: object
     properties:
-      title:
+      username:
         type: string
-        title: 本のタイトル
-    title: 借りる本
-  myappAccount:
-    type: object
-    properties:
-      name:
+      email:
         type: string
-        title: 借りる人の名前
-    title: 図書館のアカウント
-  myappAccounts:
-    type: object
-    properties:
-      accounts:
-        type: array
-        items:
-          type: object
-          $ref: '#/definitions/myappAccount'
-        title: 借りる人の名前
-    title: 図書館のアカウント
-  myappBorrrowResponse:
-    type: object
-    properties:
-      account:
-        $ref: '#/definitions/myappAccount'
-        title: 本を借りたアカウント
-      book:
-        $ref: '#/definitions/Book'
-        title: 借りた本
-      timestamp:
+      registrationDate:
         type: string
         format: date-time
-        title: 貸し出し日
-  myappRegisterBookRequest:
+  accountLoginUserRequest:
     type: object
     properties:
-      num:
-        type: integer
-        format: int64
-        title: 冊数
-      title:
+      username:
         type: string
-        title: 登録する本のタイトル
-    title: 本の登録リクエスト
-  myappRegisterBookResponse:
+      password:
+        type: string
+  accountLoginUserResponse:
     type: object
     properties:
-      num:
-        type: integer
-        format: int64
-        title: 冊数
-      title:
+      userId:
         type: string
-        title: 登録された本のタイトル
+      token:
+        type: string
+  accountRegisterUserRequest:
+    type: object
+    properties:
+      username:
+        type: string
+      password:
+        type: string
+      email:
+        type: string
+  accountRegisterUserResponse:
+    type: object
+    properties:
+      userId:
+        type: string
+      registrationDate:
+        type: string
+        format: date-time
   protobufAny:
     type: object
     properties:

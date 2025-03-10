@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package shopping;
+
+message OrderRequest {
+  string userId = 1;
+  repeated Item items = 2;
+}
+
+message Item {
+  string productId = 1;
+  int32 quantity = 2;
+}
+
+message OrderResponse {
+  enum Status {
+    SUCCESS = 0;
+    FAILURE = 1;
+  }
+  Status status = 1;
+  string orderId = 2;
+  string message = 3;
+}

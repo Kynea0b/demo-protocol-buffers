@@ -2,17 +2,18 @@ package main
 
 import (
 	"context"
-	"google.golang.org/grpc/reflection"
 	"log"
 	"net"
 	"net/http"
+
+	"google.golang.org/grpc/reflection"
 
 	"sample-book-lending/internal/auth"
 
 	"google.golang.org/grpc"
 
-	"sample-book-lending/internal/app" // internal/appのパスに置き換えてください。
-	pb "sample-book-lending/pkg/grpc"  // protobuf生成されたコードのパスに置き換えてください。
+	"sample-book-lending/internal/app"
+	pb "sample-book-lending/pkg/grpc"
 )
 
 func main() {

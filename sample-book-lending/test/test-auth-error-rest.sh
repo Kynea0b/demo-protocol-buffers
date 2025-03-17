@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # テスト対象のエンドポイント (REST API サーバーのアドレス)
-REST_API_SERVER="http://localhost:8080/v1/accounts"
+REST_API_SERVER="http://localhost:35635/v1/accounts"
 
 # テスト対象のユーザーID
 USER_ID="test_user_id"

@@ -8,12 +8,12 @@ fi
 set +a
 
 ## curl を使用したリクエスト
-#curl -v -H "Authorization: Bearer $TOKEN" http://localhost:8080/v1/accounts/$USER_ID
+#curl -v -H "Authorization: Bearer $TOKEN" http://localhost:35635/v1/accounts/$USER_ID
 ### Register
-curl -X POST -H "Content-Type: application/json" -d '{"username":"bar","password":"password123","email":"bar@example.com"}' http://localhost:8080/v1/accounts/register
+curl -X POST -H "Content-Type: application/json" -d '{"username":"bar","password":"password123","email":"bar@example.com"}' http://localhost:35635/v1/accounts/register
 
 ### Login
-curl -X POST -H "Content-Type: application/json" -d '{"username":"bar","password":"password123"}' http://localhost:8080/v1/accounts/login
+curl -X POST -H "Content-Type: application/json" -d '{"username":"bar","password":"password123"}' http://localhost:35635/v1/accounts/login
 
 ### Get User Info
-curl -H "Authorization: Bearer $TOKEN" http://localhost:8080/v1/accounts/$USER_ID
+curl -H "Authorization: Bearer $TOKEN" http://localhost:35635/v1/accounts/$USER_ID

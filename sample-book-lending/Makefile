@@ -20,7 +20,7 @@ borrow_book_with_grpc:
 	grpcurl -plaintext -d '{"book_id":"123","user_id":"xeeddfahwiophg"}' localhost:50051 library.LibraryService.BorrowBook
 
 borrow_book_with_restapi:
-	curl -X POST -H "Content-Type: application/json" -d '{"book_id":"123","user_id":"xeeddfahwiophg"}' http://localhost:8080/v1/info/book
+	curl -X POST -H "Content-Type: application/json" -d '{"book_id":"123","user_id":"xeeddfahwiophg"}' http://localhost:35635/v1/info/book
 
 RANDOM_NAME := $(shell openssl rand -base64 12 | tr -d '/+=' | head -c 12)
 

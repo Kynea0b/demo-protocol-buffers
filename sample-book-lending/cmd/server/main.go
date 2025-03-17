@@ -17,6 +17,7 @@ import (
 )
 
 func main() {
+	port_server := ":35635"
 	// gRPCサーバーの起動
 	grpcServer := grpc.NewServer(
 		grpc.UnaryInterceptor(authInterceptor), // インターセプターを登録 auth追加のため
@@ -52,7 +53,7 @@ func main() {
 
 	// HTTPサーバーの起動
 	httpServer := &http.Server{
-		Addr:    ":8080",
+		Addr:    port_server,
 		Handler: mux,
 	}
 	if err := httpServer.ListenAndServe(); err != nil {
